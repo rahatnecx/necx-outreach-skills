@@ -1,7 +1,13 @@
 {
-  "sender": { "name": "Jordan Avery", "title": "Partnerships, NECX", "email": "jordan@necx.org" },
+  "sender": {
+    "name": "Your Name",
+    "title": "Partnerships, NECX",
+    "email": "you@necx.org"
+  },
   "defaults": {
-    "voice": { "provider": "auto" },
+    "voice": {
+      "provider": "auto"
+    },
     "music": true,
     "captions": true,
     "personalizeScreens": true
@@ -10,16 +16,129 @@
     {
       "videoId": "riverbend-priya-01",
       "persona": "A",
-      "recipient": { "firstName": "Priya", "lastName": "Shah", "title": "Grants Manager", "org": "Riverbend Family Shelter" },
+      "recipient": {
+        "firstName": "Priya",
+        "lastName": "Shah",
+        "title": "Grants Manager",
+        "org": "Riverbend Family Shelter"
+      },
       "scenes": [
-        { "type": "title", "topic": "Grant reports without the quarter-end scramble", "vo": "Priya, I put this short video together for you, about grant reporting at Riverbend Family Shelter." },
-        { "type": "problem", "headline": "Every quarter, the *numbers* get rebuilt by hand.", "lines": ["Services logged in one place, demographics in another", "VOCA, FVPSA and HUD each want them their own way"], "vo": "Most shelters rebuild their funder numbers by hand every quarter, from services logged in one place and demographics in another." },
-        { "type": "screen", "screen": "dashboard", "vo": "Here's what that looks like in NECX, with your agency's name on it." },
-        { "type": "screen", "screen": "reports-case-grant", "vo": "In NECX, every case is tagged to the grant that funds it, so services count toward the right grant from day one." },
-        { "type": "screen", "screen": "voca-ready", "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off." },
-        { "type": "screen", "screen": "fvpsa-explain", "vo": "Click Explain to see every record behind a number, and anything left out." },
-        { "type": "checklist", "headline": "Less rebuilding. More *confidence.*", "items": ["Every case tagged to its grant", "Checked before you certify", "Every number explained"], "vo": "Every case tagged to its grant, checked before you certify, and every number explained." },
-        { "type": "cta", "question": "Would it help to see your last VOCA quarter built this way?", "vo": "Would it help to see your last VOCA quarter built this way? Just reply to this email." }
+        {
+          "type": "title",
+          "topic": "VOCA and FVPSA without the quarter-end scramble",
+          "vo": "Priya, I put this short video together for you, about grant reporting at Riverbend Family Shelter."
+        },
+        {
+          "type": "problem",
+          "headline": "Two funders. One set of *numbers* rebuilt by hand.",
+          "lines": [
+            "Services logged in one place, demographics in another",
+            "VOCA and FVPSA each want them their own way"
+          ],
+          "vo": "With VOCA and FVPSA both funding Riverbend, the same services get counted twice, by hand, in two different formats."
+        },
+        {
+          "type": "screen",
+          "screen": "reports-case-grant",
+          "vo": "In NECX, every case is tagged to the grant that funds it, so services count toward the right grant from day one."
+        },
+        {
+          "type": "screen",
+          "screen": "voca-ready",
+          "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off."
+        },
+        {
+          "type": "screen",
+          "screen": "fvpsa-report",
+          "vo": "The FVPSA report fills in from the same records."
+        },
+        {
+          "type": "screen",
+          "screen": "fvpsa-explain",
+          "vo": "And Explain shows every record behind a number, and anything left out."
+        },
+        {
+          "type": "checklist",
+          "headline": "Count it once. *Report* it everywhere.",
+          "items": [
+            "Every case tagged to its grant",
+            "Checked before you certify",
+            "Every number explained"
+          ],
+          "vo": "Count each service once, check it before you certify, and explain every number."
+        },
+        {
+          "type": "cta",
+          "question": "Would it help to see last quarter's VOCA report built this way?",
+          "vo": "Would it help to see last quarter's VOCA report built this way? Just reply to this email."
+        }
+      ],
+      "sources": [
+        "https://riverbend.example.org/about (fictional example org)"
+      ]
+    },
+    {
+      "videoId": "riverbend-marcus-01",
+      "persona": "B",
+      "recipient": {
+        "firstName": "Marcus",
+        "lastName": "Lee",
+        "title": "Shelter Director",
+        "org": "Riverbend Family Shelter"
+      },
+      "scenes": [
+        {
+          "type": "title",
+          "topic": "Every bed at Riverbend, live",
+          "vo": "Marcus, this is a short video I made for you, about running the shelter side of Riverbend."
+        },
+        {
+          "type": "problem",
+          "headline": "Tonight's *bed count* lives on a whiteboard.",
+          "lines": [
+            "Intake doesn't know what's free",
+            "The waitlist is a separate spreadsheet"
+          ],
+          "vo": "When the bed count lives on a whiteboard and the waitlist in a spreadsheet, intake is always guessing."
+        },
+        {
+          "type": "screen",
+          "screen": "dashboard",
+          "vo": "Here's NECX with Riverbend's name on it. Beds, hotline and what needs attention, the moment you sign in."
+        },
+        {
+          "type": "screen",
+          "screen": "shelter-board",
+          "vo": "Every bed is available, occupied, reserved, or out of service, so tonight's count is the real count."
+        },
+        {
+          "type": "screen",
+          "screen": "shelter-waitlist",
+          "vo": "The waitlist sits right beside your beds."
+        },
+        {
+          "type": "screen",
+          "screen": "referral-sharing",
+          "vo": "And when a family needs a partner shelter, you choose exactly what goes with the referral."
+        },
+        {
+          "type": "checklist",
+          "headline": "One live view of the *whole* shelter.",
+          "items": [
+            "Live bed board",
+            "Waitlist beside the beds",
+            "Referrals with consent"
+          ],
+          "vo": "One live bed board, the waitlist beside it, and referrals that share only what you choose."
+        },
+        {
+          "type": "cta",
+          "question": "Worth a 20-minute look with your own room layout?",
+          "vo": "Worth a twenty-minute look with your own room layout? Just reply to this email."
+        }
+      ],
+      "sources": [
+        "https://riverbend.example.org/shelter (fictional example org)"
       ]
     }
   ]

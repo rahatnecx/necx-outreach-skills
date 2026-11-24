@@ -15,5 +15,37 @@
     "sales",
     "victim-services",
     "video"
-  ]
+  ],
+  "userConfig": {
+    "elevenlabs_api_key": {
+      "type": "string",
+      "title": "ElevenLabs API key",
+      "description": "Voice for personalized outreach videos (elevenlabs.io \u2192 Profile \u2192 API keys). Stored in your system keychain. Leave empty to use the macOS voice, which is for review only.",
+      "sensitive": true
+    },
+    "elevenlabs_voice_id": {
+      "type": "string",
+      "title": "ElevenLabs voice ID (optional)",
+      "description": "Voice used for narration. Empty = Sarah (EXAVITQu4vr4xnSDxMaL), the voice used in NECX's product videos.",
+      "default": ""
+    },
+    "sender_name": {
+      "type": "string",
+      "title": "Your name (video sign-off)",
+      "description": "Shown on each video's title card and call to action, e.g. Jordan Avery.",
+      "default": ""
+    },
+    "sender_title": {
+      "type": "string",
+      "title": "Your title",
+      "description": "Shown next to your name on the call to action, e.g. Partnerships, NECX.",
+      "default": ""
+    },
+    "sender_email": {
+      "type": "string",
+      "title": "Your NECX email",
+      "description": "Shown on the call to action, e.g. jordan@necx.org.",
+      "default": ""
+    }
+  }
 }

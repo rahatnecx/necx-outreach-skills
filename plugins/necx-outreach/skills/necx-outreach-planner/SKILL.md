@@ -204,6 +204,8 @@ Never put multiple prospects in To, and never BCC-blast prospects.
 
 No presenter on camera. Videos are on-screen text, **real VS360 screens** (captured from the product with fictional client data) and the prospect's public homepage, plus voiceover, burned-in captions and a ducked music bed. One composition (`OutreachVideo`, 1920x1080, 30 fps, in the plugin's `video/` folder) renders every video from a plan. Timing follows the voiceover, so you don't count frames.
 
+**One person, one script.** Every contact gets their own video, written from three things: their role (what they own and what it costs them), a sourced fact about their org (funders, programs, beds, hotline, news), and the email it goes with. Two people at the same agency must differ in topic, problem, screens and question. The renderer rejects plans that repeat screens in the same order or reuse voiceover lines across contacts.
+
 Personalization is built in. On every VS360 screen the app header shows **the prospect's agency, their title and their initials**, and the dashboard says "Good afternoon, <First>".
 
 ### Defaults

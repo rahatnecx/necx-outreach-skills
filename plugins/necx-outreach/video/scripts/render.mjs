@@ -8,10 +8,13 @@
 //
 //   node scripts/render.mjs plan.json [--out dir] [--only videoId] [--voice auto|elevenlabs|say|none]
 //                                     [--no-gif] [--no-video] [--dry-run]
+//   node scripts/render.mjs [plan.json] --check-voice   which voice, ElevenLabs credits left, credits the plan needs
 //
-// Voice: ElevenLabs when ELEVENLABS_API_KEY (or ELEVEN_LABS_API) is set in the
-// environment, in this folder's .env, in ./.env, or in the file named by
-// NECX_ENV_FILE; otherwise the macOS `say` voice; otherwise captions only.
+// Voice: ElevenLabs when a key is available: the plugin's settings (Claude Code
+// asks for it when the plugin is enabled; a SessionStart hook copies it to
+// ~/.config/necx-outreach/voice.env), scripts/voice-setup.mjs (same file),
+// ELEVENLABS_API_KEY in the environment, ./.env, this folder's .env, or the file
+// named by NECX_ENV_FILE. Otherwise the macOS `say` voice; otherwise captions only.
 // Clips are cached in public/run/ by text, so re-renders don't pay twice.
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -30,27 +33,32 @@ const opt = (name, def) => {
   const i = argv.indexOf(`--${name}`);
   return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[i + 1] : def;
 };
-const planFile = argv.find((a, i) => !a.startsWith("--") && !(i > 0 && argv[i - 1].startsWith("--") && !["--no-gif", "--no-video", "--dry-run"].includes(argv[i - 1])));
-if (!planFile) {
+const BOOL = ["--no-gif", "--no-video", "--dry-run", "--check-voice"];
+const planFile = argv.find((a, i) => !a.startsWith("--") && !(i > 0 && argv[i - 1].startsWith("--") && !BOOL.includes(argv[i - 1])));
+const CHECK = flag("check-voice");
+if (!planFile && !CHECK) {
   console.error("usage: node scripts/render.mjs plan.json [--out dir] [--only videoId] [--voice auto|elevenlabs|say|none] [--no-gif] [--no-video] [--dry-run]");
   process.exit(1);
 }
-const PLAN_PATH = path.resolve(planFile);
-const PLAN_DIR = path.dirname(PLAN_PATH);
+const PLAN_PATH = planFile ? path.resolve(planFile) : null;
+const PLAN_DIR = PLAN_PATH ? path.dirname(PLAN_PATH) : process.cwd();
 const OUT = path.resolve(opt("out", path.join(process.cwd(), "necx-outreach-videos")));
 const ONLY = opt("only", null);
 const DRY = flag("dry-run");
 
 // ---- first run: dependencies -----------------------------------------------------
-if (!existsSync(path.join(HERE, "node_modules/remotion"))) {
+if (!CHECK && !existsSync(path.join(HERE, "node_modules/remotion"))) {
   console.log("Installing video dependencies (first run, about a minute)…");
   const r = spawnSync(process.platform === "win32" ? "npm.cmd" : "npm", ["install", "--no-audit", "--no-fund"], { cwd: HERE, stdio: "inherit" });
   if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
 // ---- env -----------------------------------------------------------------------
-for (const file of [process.env.NECX_ENV_FILE, path.join(HERE, ".env"), path.join(process.cwd(), ".env")].filter(Boolean)) {
+const VOICE_ENV = path.join(os.homedir(), ".config", "necx-outreach", "voice.env");
+let KEY_SOURCE = process.env.ELEVENLABS_API_KEY || process.env.ELEVEN_LABS_API ? "environment" : null;
+for (const file of [process.env.NECX_ENV_FILE, VOICE_ENV, path.join(HERE, ".env"), path.join(process.cwd(), ".env")].filter(Boolean)) {
   if (!existsSync(file)) continue;
+  if (!KEY_SOURCE && /^\s*(ELEVENLABS_API_KEY|ELEVEN_LABS_API)\s*=\s*\S/m.test(readFileSync(file, "utf8"))) KEY_SOURCE = file === VOICE_ENV ? "plugin settings" : file;
   for (const line of readFileSync(file, "utf8").split("\n")) {
     const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
     if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^(['"])(.*)\1$/, "$2");
@@ -59,7 +67,7 @@ for (const file of [process.env.NECX_ENV_FILE, path.join(HERE, ".env"), path.joi
 const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY ?? process.env.ELEVEN_LABS_API;
 
 // ---- plan ----------------------------------------------------------------------
-const raw = JSON.parse(readFileSync(PLAN_PATH, "utf8"));
+const raw = PLAN_PATH ? JSON.parse(readFileSync(PLAN_PATH, "utf8")) : { videos: [] };
 const PLAN = Array.isArray(raw) ? { videos: raw } : raw.videos ? raw : { videos: [raw] };
 const CATALOG = JSON.parse(readFileSync(path.join(HERE, "public/screens/catalog.json"), "utf8")).screens;
 const TYPES = new Set(["title", "problem", "website", "screen", "checklist", "stat", "cta"]);
@@ -85,7 +93,39 @@ const videos = PLAN.videos
     }
     return video;
   });
-if (!videos.length) problems.push(ONLY ? `no video with videoId "${ONLY}"` : "the plan has no videos");
+if (!videos.length && !CHECK) problems.push(ONLY ? `no video with videoId "${ONLY}"` : "the plan has no videos");
+
+// Every contact gets their own script: written for their role and their org,
+// never a template. Hard rules are problems; softer signals are warnings.
+const warnings = [];
+const norm = (t) => (t ?? "").toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+for (const v of videos) {
+  const where = v.videoId;
+  const r = v.recipient ?? {};
+  const title = v.scenes?.find((s) => s.type === "title");
+  if (!title) problems.push(`${where}: start with a title scene`);
+  else if (r.firstName && !(title.vo ?? "").includes(r.firstName)) problems.push(`${where}: the title voiceover must say ${r.firstName}'s name`);
+  const all = (v.scenes ?? []).map((s) => [s.vo, s.topic, s.headline, s.question, ...(s.lines ?? []), ...(s.items ?? [])].join(" ")).join(" ");
+  const orgWords = (r.org ?? "").split(/\s+/).filter((w) => w.length > 3 && !/^(the|and|for|inc|center|centre|services|shelter|family)$/i.test(w));
+  if (r.org && !all.includes(r.org) && !orgWords.some((w) => all.includes(w))) warnings.push(`${where}: the script never names ${r.org}; mention the agency at least once`);
+  if (!v.scenes?.some((s) => s.type === "screen")) warnings.push(`${where}: no VS360 screens; show the product for their role`);
+  if (!(v.sources ?? []).length) warnings.push(`${where}: no sources; list the org-fact URLs the script relies on`);
+  if (!v.sender?.name || /^your name$/i.test(v.sender.name)) warnings.push(`${where}: sender is the example sender; set your own name (plugin settings) or "sender" in the plan`);
+}
+for (let i = 0; i < videos.length; i++) {
+  for (let j = i + 1; j < videos.length; j++) {
+    const a = videos[i];
+    const b = videos[j];
+    const screens = (v) => (v.scenes ?? []).filter((s) => s.type === "screen").map((s) => s.screen).join(",");
+    if (screens(a) && screens(a) === screens(b)) problems.push(`${a.videoId} and ${b.videoId} show the same screens in the same order; pick screens for each person's role`);
+    const lines = (v) => new Set((v.scenes ?? []).filter((s) => s.type !== "cta" && s.vo).map((s) => norm(s.vo)));
+    const la = lines(a);
+    const shared = [...lines(b)].filter((l) => la.has(l));
+    if (shared.length > 1) problems.push(`${a.videoId} and ${b.videoId} share ${shared.length} identical voiceover lines; write each script for its person`);
+    else if (shared.length === 1) warnings.push(`${a.videoId} and ${b.videoId} share a voiceover line: "${shared[0].slice(0, 70)}…"`);
+  }
+}
+for (const w of warnings) console.warn(`  ! ${w}`);
 if (problems.length) {
   console.error("Plan problems:\n  " + problems.join("\n  "));
   process.exit(1);
@@ -105,7 +145,7 @@ const spoken = (text) =>
     .replace(/([\w.+-]+)@necx\.org/g, (_, u) => `${u} at necks dot O. R. G.`)
     .replace(/\*/g, "");
 
-const wanted = opt("voice", null) ?? videos[0].voice?.provider ?? "auto";
+const wanted = opt("voice", null) ?? videos[0]?.voice?.provider ?? "auto";
 const hasSay = process.platform === "darwin" && spawnSync("which", ["say"]).status === 0;
 let PROVIDER = wanted === "auto" ? (ELEVEN_KEY ? "elevenlabs" : hasSay ? "say" : "none") : wanted;
 if (PROVIDER === "elevenlabs" && !ELEVEN_KEY) {
@@ -117,6 +157,32 @@ if (PROVIDER === "say" && !hasSay) {
   process.exit(1);
 }
 
+// credits: what ElevenLabs has left vs what this plan's uncached lines need
+async function credits() {
+  if (!ELEVEN_KEY) return null;
+  try {
+    const res = await fetch("https://api.elevenlabs.io/v1/user/subscription", { headers: { "xi-api-key": ELEVEN_KEY } });
+    if (!res.ok) return { error: `ElevenLabs ${res.status}` };
+    const sub = await res.json();
+    return { left: (sub.character_limit ?? 0) - (sub.character_count ?? 0), tier: sub.tier, resets: sub.next_character_count_reset_unix };
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+const lineId = (text, voice, provider) => createHash("sha1").update(`${provider}|${voice?.voiceId ?? ""}|${voice?.speed ?? 1}|${spoken(text)}`).digest("hex").slice(0, 14);
+const needed = () =>
+  videos.flatMap((v) => v.scenes.filter((s) => s.vo).map((s) => [s.vo, v.voice])).filter(([t, voice]) => !existsSync(path.join(RUN, `vo-${lineId(t, voice, "elevenlabs")}.mp3`))).reduce((n, [t]) => n + spoken(t).length, 0);
+
+if (CHECK) {
+  const c = await credits();
+  console.log(`ElevenLabs key: ${ELEVEN_KEY ? `found (${KEY_SOURCE})` : "not set"}`);
+  if (c?.error) console.log(`ElevenLabs: key check failed (${c.error})`);
+  else if (c) console.log(`ElevenLabs credits left: ${c.left.toLocaleString()} characters (${c.tier ?? "plan"})${c.resets ? `, resets ${new Date(c.resets * 1000).toISOString().slice(0, 10)}` : ""}`);
+  if (videos.length) console.log(`This plan needs: ${needed().toLocaleString()} characters (${videos.length} video(s), already-voiced lines excluded)`);
+  console.log(`Voice that would be used: ${PROVIDER}${PROVIDER === "say" ? " (macOS, review only)" : ""}`);
+  process.exit(0);
+}
+
 const REMOTION_BIN = path.join(HERE, "node_modules/.bin", process.platform === "win32" ? "remotion.cmd" : "remotion");
 function seconds(file) {
   const out = execFileSync(REMOTION_BIN, ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", file], { encoding: "utf8" });
@@ -125,7 +191,7 @@ function seconds(file) {
 
 async function synth(text, voice) {
   const say = spoken(text);
-  const id = createHash("sha1").update(`${PROVIDER}|${voice?.voiceId ?? ""}|${voice?.speed ?? 1}|${say}`).digest("hex").slice(0, 14);
+  const id = lineId(text, voice, PROVIDER);
   const ext = PROVIDER === "elevenlabs" ? "mp3" : "m4a";
   const rel = `run/vo-${id}.${ext}`;
   const file = path.join(HERE, "public", rel);
@@ -168,7 +234,21 @@ async function stage(image) {
 }
 
 mkdirSync(RUN, { recursive: true });
-console.log(`Voice: ${PROVIDER}${PROVIDER === "none" ? " (captions only)" : ""}`);
+// don't start a render ElevenLabs can't finish
+if (PROVIDER === "elevenlabs" && !DRY) {
+  const c = await credits();
+  const need = needed();
+  const short = c?.error ? c.error : c && c.left < need ? `${c.left.toLocaleString()} characters left, this plan needs ${need.toLocaleString()}` : null;
+  if (short) {
+    if (wanted !== "auto") {
+      console.error(`ElevenLabs can't voice this plan: ${short}. Top up, or use --voice say for a review render.`);
+      process.exit(1);
+    }
+    PROVIDER = hasSay ? "say" : "none";
+    console.warn(`ElevenLabs can't voice this plan (${short}). Using ${PROVIDER} instead; re-render after topping up for the real voice.`);
+  }
+}
+console.log(`Voice: ${PROVIDER}${PROVIDER === "none" ? " (captions only)" : PROVIDER === "say" ? " (macOS, review only)" : ""}`);
 async function voiceAll() {
   for (const v of videos) for (const s of v.scenes) if (s.vo && PROVIDER !== "none" && !DRY) s.audio = await synth(s.vo, v.voice);
 }

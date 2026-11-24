@@ -32,7 +32,9 @@ For each video, `<out>/<videoId>/` gets:
 **Speed:** a 60-second video takes 1–3 minutes on an Apple-silicon Mac.
 
 **Voice** (`--voice auto | elevenlabs | say | none`):
-- **auto:** ElevenLabs if `ELEVENLABS_API_KEY` (or `ELEVEN_LABS_API`) is set in the environment, `./.env`, this folder's `.env`, or the file named by `NECX_ENV_FILE`. Otherwise the macOS `say` voice. Otherwise captions only.
+- **Setting the key:** Claude Code asks for it in the plugin settings (`/plugin` → necx-outreach → Configure; kept in the system keychain). A SessionStart hook (`scripts/sync-voice-key.mjs`) copies it to `~/.config/necx-outreach/voice.env`, readable only by you, because Claude Code doesn't pass plugin secrets to Bash commands. Without Claude Code, run `node scripts/voice-setup.mjs` in a terminal.
+- **auto:** ElevenLabs if a key is found there, or in `ELEVENLABS_API_KEY` / `./.env` / this folder's `.env` / `NECX_ENV_FILE`. Otherwise the macOS `say` voice. Otherwise captions only.
+- **Credits:** `--check-voice` shows the credits left and what the plan needs. A render that ElevenLabs can't finish falls back before spending anything.
 - **Fallback:** if ElevenLabs fails (quota, network), every line is re-voiced with the fallback, so one video never mixes voices.
 - **Cache:** clips are cached in `public/run/` by text.
 

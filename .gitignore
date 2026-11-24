@@ -1,0 +1,20 @@
+# Never commit prospect or CRM data
+*.csv
+*.xlsx
+*.xls
+exports/
+prospects/
+private/
+
+# Build output
+*.zip
+out/
+renders/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+.env

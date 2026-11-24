@@ -16,17 +16,19 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/check.py
-      - name: Build skill zip for Claude upload
+      - name: Build skill zips for Claude upload (claude.ai / Desktop / Cowork)
         run: |
           cd plugins/necx-outreach/skills
           zip -r ../../../necx-outreach-planner.zip necx-outreach-planner
+          zip -r ../../../necx-outreach-video.zip necx-outreach-video
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${GITHUB_REF_NAME}" \
             necx-outreach-planner.zip \
+            necx-outreach-video.zip \
             playbook/necx-outreach-playbook.md \
             chatgpt/custom-gpt-setup.md \
             --title "${GITHUB_REF_NAME}" \
-            --notes "See CHANGELOG.md. Claude: upload necx-outreach-planner.zip. ChatGPT: re-paste the Instructions block and re-upload the playbook."
+            --notes "See CHANGELOG.md. Claude: upload necx-outreach-planner.zip and necx-outreach-video.zip, and add the NECX Video connector to render videos. ChatGPT: re-paste the Instructions block and re-upload the playbook."

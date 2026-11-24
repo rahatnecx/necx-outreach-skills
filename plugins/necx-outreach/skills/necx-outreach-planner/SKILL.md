@@ -19,7 +19,7 @@ The output is a ranked contact plan with send dates, To/CC/BCC, subject, body, b
 ## How to run it in Claude
 - **Fetching:** use the Firecrawl tools: `firecrawl_scrape` with formats `markdown` and `links`, `onlyMainContent: true`, `waitFor: 3000`. Use `firecrawl_search` for searches and the `screenshot` format for the homepage. necx.org and docs.necx.org are JS-rendered, so plain WebFetch returns only metadata. If Firecrawl isn't connected, try WebFetch. If a page comes back empty, say so and ask the user to paste it.
 - **Deliverable:** a Docs artifact when that type is available (one section per contact), otherwise a markdown file. A one-person request is answered in chat.
-- **Rendering:** the plugin renders the videos itself. When the user wants the videos made, save the plan JSON (section 8) and follow the `necx-outreach-video` skill. It outputs an MP4, an email thumbnail and a GIF preview per contact, with the prospect's agency and name inside real VS360 screens. Rendering needs Claude Code with this plugin; elsewhere, deliver the plan JSON.
+- **Rendering:** when the user wants the videos made, follow the `necx-outreach-video` skill with the plan JSON (section 8). It renders one video per contact, with the prospect's agency and name inside real VS360 screens: through the **NECX Video connector** (claude.ai, Desktop, Cowork, Claude Code; hosted watch-page links) or locally in Claude Code with this plugin. Without either, deliver the plan JSON.
 - **Check-ins:** ask before starting only when org name/website or the employee list is missing. Otherwise state your assumptions and proceed.
 
 ---

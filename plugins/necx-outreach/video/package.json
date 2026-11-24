@@ -7,10 +7,12 @@
     "studio": "remotion studio src/index.js",
     "render": "node --no-warnings scripts/render.mjs",
     "capture": "node --no-warnings capture/capture.mjs",
-    "screens": "node --no-warnings scripts/screens.mjs"
+    "screens": "node --no-warnings scripts/screens.mjs",
+    "server": "node --no-warnings server/server.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.3.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@remotion/bundler": "4.0.535",
     "@remotion/cli": "4.0.535",
     "@remotion/renderer": "4.0.535",
@@ -18,7 +20,8 @@
     "@tabler/icons-react": "^3.41.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "remotion": "4.0.535"
+    "remotion": "4.0.535",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "flag-icons": "^7.6.0",

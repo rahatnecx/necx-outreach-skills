@@ -1,6 +1,6 @@
 ---
 name: "necx-outreach-video"
-description: "Render personalized NECX outreach videos (MP4, email thumbnail, GIF preview) for prospects at victim-services agencies, using real VS360 screens that show the prospect's agency name and their own name. Use after necx-outreach-planner, or when asked to make, render or preview a personalized video for a contact."
+description: "Write and render a different personalized NECX outreach video for each contact at a victim-services agency (MP4, hosted watch page, email thumbnail, GIF preview), on real VS360 screens that show the prospect's agency and name. Works in claude.ai, Claude Desktop, Cowork (through the NECX Video connector) and Claude Code. Use after necx-outreach-planner, or when asked to make, render or preview a personalized video for a contact."
 ---
 
 # NECX Outreach Video
@@ -12,7 +12,23 @@ Writes and renders **a different video for every contact**. Two people at the sa
 - **Narration and polish:** voiceover, burned-in captions, and a music bed ducked under the voice.
 - **Outputs:** an MP4 (1920×1080), a `thumbnail.png` / `thumbnail.jpg` with a play button for the email, a 3-second `preview.gif`, and `script.md` for review.
 
-It needs **Claude Code with the necx-outreach plugin installed**, plus Node 18+. It can't run on claude.ai or in ChatGPT. There, deliver the plan JSON and say it renders in Claude Code.
+## Pick the render path (check in this order)
+
+1. **NECX Video connector.** Use it whenever the tools `preview_plan`, `render_videos`, `get_render_status` and `list_screens` are available. This works in claude.ai on the web, Claude Desktop, Cowork and Claude Code alike.
+   - Rendering happens on the NECX server, and the ElevenLabs key lives there. **Never ask the user for a key on this path.**
+   - Steps:
+     1. `list_screens` (if you need the catalog).
+     2. Write the plan.
+     3. `preview_plan`, and show the user each script.
+     4. `render_videos`.
+     5. Call `get_render_status` about once a minute until done. Tell the user it's rendering, about 2 minutes per video.
+     6. Give the links.
+2. **Local renderer.** In Claude Code with this plugin installed (the folder `${CLAUDE_PLUGIN_ROOT}/video` exists and `node` runs), follow *Steps (local render)* below.
+3. **Neither.** Write the plan JSON and save it as a file. Tell the user the videos render once the **NECX Video** connector is added (claude.ai / Desktop: Settings → Connectors → Add custom connector, using the URL from the NECX admin), or in Claude Code with the plugin.
+
+**Delivering videos from the connector:** for each person, give the watch-page link plus an email-ready snippet: `<a href="WATCH_URL"><img src="GIF_URL" alt="A short video for FIRST" width="480"></a>`. Use the thumbnail URL instead of the GIF if their mail client blocks animation.
+
+Watch pages are unguessable, unlisted and not indexed. Still, they show the prospect's name and agency, so share them only in that person's email.
 
 ## Where things are
 
@@ -30,7 +46,7 @@ The sender saved in the plugin settings is:
 
 Use these for `sender` in every plan. If a value above is empty or still shows a `${...}` placeholder, ask the user once for their name, title and NECX email, and tell them they can save these in the plugin settings (`/plugin` → necx-outreach → Configure).
 
-## Steps
+## Steps (local render)
 
 0. **Check the voice first.** Run `node "${CLAUDE_PLUGIN_ROOT}/video/scripts/render.mjs" <plan.json> --check-voice`. It reports whether an ElevenLabs key is set (never the key itself), the credits left, and how many credits this plan needs.
    - **No key:** ask the user for one, but **never ask them to paste the key into the chat**. Give them two ways to set it:

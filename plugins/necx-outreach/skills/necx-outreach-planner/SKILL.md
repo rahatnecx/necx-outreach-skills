@@ -28,7 +28,7 @@ The output is a ranked contact plan with send dates, To/CC/BCC, subject, body, b
 
 | Input | Required | Example |
 |---|---|---|
-| Organization name + website | Yes | The Shelter for Abused Women & Children, naplesshelter.org |
+| Organization name + website | Yes | Riverbend Family Shelter, riverbend.example.org |
 | Employee list (name + title) | Yes | Apollo, LinkedIn or ZoomInfo export |
 | Prior emails already sent | If any | 4 emails to the CEO, Oct-Nov |
 | Sender name, title, signature | Yes | Sheikh Tonmoy Ahmed, SDR, NECX Inc. |
@@ -303,8 +303,8 @@ Excluded: <names + reason>
 ```
 
 ## 11. Worked example (abridged)
-The Shelter for Abused Women & Children, Naples FL.
-- **Signals:** CEO Linda Oberhaus on the 2026 IMPACT 50 (naplesshelter.org/?p=44302); ESG PY2024 $117,401 / 370 people and the DCF 35-day trafficking program (both from prior email, re-verify).
-- **Ranking:** Romina Dellepere (A) -> Alexis Rhodes (A) -> Dan Bennewitz (B) -> Jean Witthoft (C, text only) -> Angie Romak (G) -> Linda Oberhaus (F, final). Warm only: Timothy Barone (CFO), Sarah Sepanik (Residential Manager). Flagged: two Chief Development Officer records.
+A domestic-violence shelter in Florida (anonymized).
+- **Signals:** CEO named to a regional leadership list (cite the agency's news post); ESG award and people served, and a new state trafficking program (both from a prior email, re-verify).
+- **Ranking:** Contracts & Reporting Manager (A) -> Program Quality Specialist (A) -> COO (B) -> Chief Administrative Officer (C, text only) -> Executive Assistant (G) -> CEO (F, final). Warm only: CFO, Residential Manager. Flagged: two Chief Development Officer records.
 - **Schedule:** Dec 2, 3, 7, bump Dec 9, Dec 10, Dec 15, Jan 5.
 - **Correction:** replaced "address is never shown" with "protected by role-based access and an audit trail".

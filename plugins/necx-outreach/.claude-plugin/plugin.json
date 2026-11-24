@@ -1,6 +1,6 @@
 {
   "name": "necx-outreach",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Plan NECX multi-thread outreach to victim-services organizations (research, contact ranking, To/CC/BCC, emails) and render personalized faceless videos on real VS360 screens that show the prospect's agency and name.",
   "author": {
     "name": "NECX Inc.",

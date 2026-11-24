@@ -8,7 +8,7 @@
 5. **Knowledge:** upload `necx-outreach-playbook.md`. It's the full rulebook the instructions point to.
 6. **Capabilities:** turn on **Web Search** and **Code Interpreter & Data Analysis** (for CSV employee lists). Image generation can stay off.
 7. **Conversation starters:**
-   - "Plan outreach for naplesshelter.org. Employee list attached."
+   - "Plan outreach for <agency website>. Employee list attached."
    - "Rank this employee list and tell me who to email first."
    - "Write the Remotion video spec for the reporting manager."
    - "Check my previous emails for claims we shouldn't make."

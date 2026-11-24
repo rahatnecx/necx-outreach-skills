@@ -11,7 +11,7 @@
 
 | Input | Required | Example |
 |---|---|---|
-| Organization name + website | Yes | The Shelter for Abused Women & Children, naplesshelter.org |
+| Organization name + website | Yes | Riverbend Family Shelter, riverbend.example.org |
 | Employee list (pasted or a file: name + title) | Yes | Apollo, LinkedIn or ZoomInfo export |
 | Prior emails already sent (full thread) | If any | 4 emails to the CEO, Oct–Nov |
 | Sender name, title, signature | Yes | Sheikh Tonmoy Ahmed, SDR, NECX Inc. |
@@ -342,9 +342,9 @@ Excluded: <names + reason>
 
 ---
 
-## 11. Worked example (abridged): The Shelter for Abused Women & Children, Naples FL
+## 11. Worked example (abridged): a domestic-violence shelter in Florida (anonymized)
 
-- **Signals:** CEO Linda Oberhaus named to 2026 IMPACT 50 (naplesshelter.org/?p=44302); ESG PY2024 $117,401, 370 people (from prior email, re-verify); DCF 35-day trafficking program, July (from prior email, re-verify). CEO had 4 unanswered emails.
-- **Ranking:** 1 Romina Dellepere (A, Contracts & Reporting) → 2 Alexis Rhodes (A, Program Quality) → 3 Dan Bennewitz (B, COO) → 4 Jean Witthoft (C, CAO, text only) → 5 Angie Romak (G, routing note) → 6 Linda Oberhaus (F, final video). Warm only: Timothy Barone (D, CFO), Sarah Sepanik (E, Residential Manager). Flagged: two "Chief Development Officer" records (Cyndi Fields / Lauren McDermott). Excluded: development, events, HR, legal, thrift store, therapists, advocates, board.
+- **Signals:** the CEO was named to a regional leadership list (cite the agency's news post); ESG award amount and people served (from a prior email, re-verify); a new state-funded trafficking program (from a prior email, re-verify). The CEO had several unanswered emails.
+- **Ranking:** 1 Contracts & Reporting Manager (A) → 2 Program Quality Specialist (A) → 3 COO (B) → 4 Chief Administrative Officer (C, text only) → 5 Executive Assistant to the CEO (G, routing note) → 6 CEO (F, final video). Warm only: CFO (D), Residential Manager (E). Flagged: two records with the title "Chief Development Officer". Excluded: development, events, HR, legal, thrift store, therapists, advocates, board.
 - **Schedule:** Dec 2, Dec 3, Dec 7, bump Dec 9, Dec 10, Dec 15, Jan 5 (avoids Thanksgiving week and Giving Tuesday, Dec 1).
 - **Correction applied:** the prior email's "address is never shown" was replaced with "protected by role-based access and an audit trail."

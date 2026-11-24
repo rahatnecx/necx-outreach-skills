@@ -3,6 +3,9 @@
 All notable changes to the playbook, skill and GPT instructions.
 Format: date · version · change · source.
 
+## v1.2.1 — 2026-11-24
+- Repo made public. The worked example and sample prompts no longer name a real agency or its staff: they use roles and a fictional `riverbend.example.org`. The README now states the public-repo rules.
+
 ## v1.2.0 — 2026-11-24
 - NECX Video connector, local: the plugin starts a video renderer on the user's own computer automatically (`.mcp.json` → `video/server/start.sh` → `video/server/local.mjs`). It works in Claude Code, Claude Desktop and Cowork; Cowork's own code sandbox can't render, but plugin connectors run on the user's machine.
   - Tools: list_screens, preview_plan, render_videos, get_render_status, setup_voice, open_videos_folder.

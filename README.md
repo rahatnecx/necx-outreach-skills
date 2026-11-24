@@ -8,7 +8,7 @@ The single source of truth for NECX's personalized multi-thread outreach to vict
 - write subjects and bodies from verified NECX features
 - render a personalized video per contact: real VS360 screens that show the prospect's agency and name, with voiceover and captions
 
-> **Private repo.** Contains the internal sales process and pricing notes. Never commit real prospect emails, employee exports or CRM data.
+> **Public repo.** Never commit real prospect names, emails, employee exports, CRM data, rendered videos or API keys. Examples use fictional agencies (`*.example.org`) or roles only. Real plans and videos stay in your CRM and on your computer.
 
 ## What's inside
 
@@ -29,7 +29,7 @@ The single source of truth for NECX's personalized multi-thread outreach to vict
 
 ### Claude Code
 ```
-/plugin marketplace add <your-org>/necx-outreach
+/plugin marketplace add rahatnecx/necx-outreach-skills
 /plugin install necx-outreach@necx-outreach
 ```
 Update later with `/plugin marketplace update necx-outreach`.
@@ -40,7 +40,7 @@ Update later with `/plugin marketplace update necx-outreach`.
 3. **Personal plans:** upload it under **Customize → Skills**.
 4. Connect **Firecrawl** in Claude. The skill needs it to read JS-rendered sites like necx.org.
 
-Then ask: *"Plan outreach for naplesshelter.org"* and attach the employee list.
+Then ask: *"Plan outreach for <agency website>"* and attach the employee list.
 
 ### Personalized videos
 Ask *"Render the videos"* after a plan. Every contact gets their own video: real VS360 screens showing **their agency, title and initials**, a first-name greeting, voiceover and captions, plus an email thumbnail and GIF.

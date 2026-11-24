@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "NECX internal sales skills: personalized multi-thread outreach for victim-services agencies.",
-    "version": "1.2.0"
+    "version": "1.2.1"
   },
   "plugins": [
     {
       "name": "necx-outreach",
       "source": "./plugins/necx-outreach",
       "description": "Research a victim-services org, rank employees, set To/CC/BCC, write emails, and render personalized videos (MP4 + email thumbnail) on real VS360 screens carrying the prospect's agency and name.",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "category": "sales"
     }
   ]

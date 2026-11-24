@@ -1,0 +1,11 @@
+{
+  "name": "necx-outreach",
+  "version": "1.0.0",
+  "description": "Plan NECX multi-thread outreach to victim-services organizations: research, contact ranking, To/CC/BCC, emails and faceless Remotion video specs.",
+  "author": {
+    "name": "NECX Inc.",
+    "email": "sales-ops@necx.org"
+  },
+  "homepage": "https://necx.org",
+  "keywords": ["sales", "outreach", "victim-services", "remotion", "necx"]
+}

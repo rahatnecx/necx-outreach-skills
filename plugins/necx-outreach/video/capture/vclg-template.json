@@ -1,0 +1,1507 @@
+{
+ "program": "TX_OAG_VCLG",
+ "template": {
+  "key": "tx-oag-vclg-qpr",
+  "version": "tx-oag-vclg-qpr-fy2027",
+  "program": "TX_OAG_VCLG",
+  "title": "Texas OAG VCLG Quarterly Performance Report",
+  "funder": "Texas Office of the Attorney General",
+  "reportType": "TX_OAG_VCLG_QPR",
+  "configVersion": "TX_OAG_VCLG:FY2027",
+  "omb": null,
+  "sourceUrl": "https://www.texasattorneygeneral.gov/crime-victims/grants-for-crime-victims-services",
+  "fundingScope": "grant_only",
+  "periodKinds": [
+   "quarterly"
+  ],
+  "defaultPeriodKind": "quarterly",
+  "quarterStartMonths": [
+   9,
+   12,
+   3,
+   6
+  ],
+  "quarterlyDueDays": 30,
+  "defaultDueDate": null,
+  "overlays": [],
+  "auditViews": true,
+  "drillDownNeedsCaseAccess": true,
+  "certificationTitle": "7. Data verification",
+  "certificationVerb": "reviewed and initialed",
+  "sections": [
+   {
+    "key": "AGENCY",
+    "title": "1. Agency information",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "GI-NAME",
+      "label": "Grantee name",
+      "type": "text",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-CONTRACT",
+      "label": "Grant number (OAG contract)",
+      "type": "text",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-FY",
+      "label": "State fiscal year",
+      "type": "year",
+      "source": "profile",
+      "required": false
+     },
+     {
+      "key": "GI-QUARTER",
+      "label": "Quarter",
+      "type": "integer",
+      "source": "profile",
+      "required": false
+     },
+     {
+      "key": "GI-ORG-TYPE",
+      "label": "Grantee type",
+      "type": "single_select",
+      "source": "profile",
+      "required": true,
+      "options": [
+       {
+        "value": "prosecutor",
+        "label": "Prosecutor"
+       },
+       {
+        "value": "law_enforcement",
+        "label": "Law enforcement"
+       }
+      ]
+     },
+     {
+      "key": "GI-ENTITY-TYPE",
+      "label": "Organization",
+      "type": "single_select",
+      "source": "profile",
+      "required": true,
+      "options": [
+       {
+        "value": "local_government",
+        "label": "Local unit of government"
+       },
+       {
+        "value": "nonprofit",
+        "label": "Non-profit organization"
+       }
+      ]
+     },
+     {
+      "key": "GI-NONPROFIT",
+      "label": "Non-profit grantee",
+      "type": "boolean",
+      "source": "profile",
+      "required": false,
+      "hidden": true
+     },
+     {
+      "key": "GI-SAVNS",
+      "label": "Does the county take part in Texas SAVNS?",
+      "type": "boolean",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-AO",
+      "label": "Authorized Official",
+      "type": "contact",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-ALT",
+      "label": "Alternate Designee",
+      "type": "contact",
+      "source": "profile",
+      "required": false
+     },
+     {
+      "key": "GI-CONTACT",
+      "label": "Grant Contact",
+      "type": "contact",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-FINANCIAL",
+      "label": "Financial Officer",
+      "type": "contact",
+      "source": "profile",
+      "required": false
+     },
+     {
+      "key": "GI-CORRECTIONS",
+      "label": "Person to contact for corrections",
+      "type": "contact",
+      "source": "profile",
+      "required": true
+     },
+     {
+      "key": "GI-SIGNERS",
+      "label": "Staff who may sign",
+      "type": "data",
+      "source": "computed",
+      "required": false,
+      "hidden": true
+     }
+    ]
+   },
+   {
+    "key": "VICTIMS",
+    "title": "2. Direct victim services provided during grant funded hours",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "S4-VICTIMS",
+      "label": "2.1 Victims served (each victim once a month)",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "new",
+        "label": "New Victims Served"
+       },
+       {
+        "value": "continuing",
+        "label": "Continuing Victims"
+       },
+       {
+        "value": "total",
+        "label": "Total Victims Served"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-UNIQUE-YTD",
+      "label": "Unique victims served, fiscal year to date",
+      "type": "integer",
+      "source": "computed",
+      "required": true
+     },
+     {
+      "key": "S4-UNIQUE-TARGET",
+      "label": "Unique victims served — annual target",
+      "type": "integer",
+      "source": "computed",
+      "required": false
+     },
+     {
+      "key": "S4-TARGETS",
+      "label": "Projected targets — this quarter and fiscal year to date",
+      "type": "matrix",
+      "source": "computed",
+      "required": false,
+      "rows": [
+       {
+        "value": "unique_victims",
+        "label": "Unique victims served"
+       },
+       {
+        "value": "service:accompaniment",
+        "label": "Accompaniment to Hospitals, Law Enforcement Offices, Prosecutors' Offices and Courts"
+       },
+       {
+        "value": "service:advocacy",
+        "label": "Advocacy"
+       },
+       {
+        "value": "service:cvc",
+        "label": "Assistance with Crime Victims' Compensation"
+       },
+       {
+        "value": "service:restitution",
+        "label": "Assistance with Restitution"
+       },
+       {
+        "value": "service:savns",
+        "label": "Assistance with Texas SAVNS"
+       },
+       {
+        "value": "service:victim_impact_panels",
+        "label": "Assistance with Victim Impact Panels"
+       },
+       {
+        "value": "service:victim_impact_statements",
+        "label": "Assistance with Victim Impact Statements"
+       },
+       {
+        "value": "service:crisis_intervention",
+        "label": "Crisis Intervention"
+       },
+       {
+        "value": "service:emergency_funds",
+        "label": "Emergency Funds"
+       },
+       {
+        "value": "service:follow_up",
+        "label": "Follow-up with Victim"
+       },
+       {
+        "value": "service:groups",
+        "label": "Groups (Support, Therapeutic)"
+       },
+       {
+        "value": "service:individual_counseling",
+        "label": "Individual Counseling"
+       },
+       {
+        "value": "service:information_referral",
+        "label": "Information and Referral"
+       },
+       {
+        "value": "service:legal_assistance",
+        "label": "Legal Assistance"
+       },
+       {
+        "value": "service:lodging",
+        "label": "Lodging"
+       },
+       {
+        "value": "service:peer_support",
+        "label": "Peer Support Services"
+       },
+       {
+        "value": "service:transportation",
+        "label": "Transportation"
+       },
+       {
+        "value": "service:other",
+        "label": "Other Direct Victim Services"
+       },
+       {
+        "value": "public_speeches",
+        "label": "Public speeches"
+       },
+       {
+        "value": "information_booths",
+        "label": "Information booths"
+       },
+       {
+        "value": "speech_participants",
+        "label": "Public speech participants"
+       },
+       {
+        "value": "booth_attendees",
+        "label": "Attendees at informational booths"
+       },
+       {
+        "value": "training_sessions",
+        "label": "Victim services training sessions"
+       },
+       {
+        "value": "trained:faith_based",
+        "label": "Faith-Based individuals trained"
+       },
+       {
+        "value": "trained:law_enforcement",
+        "label": "Law Enforcement individuals trained"
+       },
+       {
+        "value": "trained:medical",
+        "label": "Medical individuals trained"
+       },
+       {
+        "value": "trained:prosecution_judicial",
+        "label": "Prosecution/Judicial individuals trained"
+       },
+       {
+        "value": "trained:school_faculty",
+        "label": "School Faculty individuals trained"
+       },
+       {
+        "value": "trained:volunteer",
+        "label": "Volunteer individuals trained"
+       },
+       {
+        "value": "trained:other",
+        "label": "Other individuals trained"
+       }
+      ],
+      "cols": [
+       {
+        "value": "target",
+        "label": "Projected target"
+       },
+       {
+        "value": "quarter",
+        "label": "This quarter"
+       },
+       {
+        "value": "quarter_pct",
+        "label": "Quarter % of target"
+       },
+       {
+        "value": "ytd",
+        "label": "Fiscal year to date"
+       },
+       {
+        "value": "ytd_pct",
+        "label": "YTD % of target"
+       }
+      ],
+      "cellType": "decimal",
+      "precision": 1,
+      "noOverride": true,
+      "onlyRowsWithValues": true
+     },
+     {
+      "key": "S4-GENDER",
+      "label": "2.2 Gender of new victims",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "female",
+        "label": "Female"
+       },
+       {
+        "value": "male",
+        "label": "Male"
+       },
+       {
+        "value": "unknown",
+        "label": "Gender Unknown"
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-AGE",
+      "label": "2.2 Age of new victims",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "0_12",
+        "label": "Age 0-12"
+       },
+       {
+        "value": "13_17",
+        "label": "Age 13-17"
+       },
+       {
+        "value": "18_24",
+        "label": "Age 18-24"
+       },
+       {
+        "value": "25_59",
+        "label": "Age 25-59"
+       },
+       {
+        "value": "60_plus",
+        "label": "Age 60 and Older"
+       },
+       {
+        "value": "unknown",
+        "label": "Age of Victim Unknown"
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-RACE",
+      "label": "2.2 Ethnicity of new victims",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "aian",
+        "label": "American Indian/Alaskan Native"
+       },
+       {
+        "value": "asian",
+        "label": "Asian"
+       },
+       {
+        "value": "black",
+        "label": "Black/African American"
+       },
+       {
+        "value": "hispanic",
+        "label": "Hispanic or Latino"
+       },
+       {
+        "value": "nhpi",
+        "label": "Native Hawaiian and Other Pacific Islander"
+       },
+       {
+        "value": "white",
+        "label": "White Non-Latino/Caucasian"
+       },
+       {
+        "value": "other",
+        "label": "Other"
+       },
+       {
+        "value": "unknown",
+        "label": "Ethnicity Unknown"
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-POPULATIONS",
+      "label": "2.3 Specific populations of new victims served",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "disability",
+        "label": "Persons with Disabilities"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      }
+     },
+     {
+      "key": "S4-VICTIMIZATION",
+      "label": "2.4 Type of victimization of new victims (one per victim)",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "assault",
+        "label": "Assault"
+       },
+       {
+        "value": "dui_dwi",
+        "label": "DUI/DWI"
+       },
+       {
+        "value": "family_violence",
+        "label": "Family Violence"
+       },
+       {
+        "value": "hate_bias",
+        "label": "Hate/Bias Crimes"
+       },
+       {
+        "value": "human_trafficking",
+        "label": "Human Trafficking"
+       },
+       {
+        "value": "physical_abuse_child",
+        "label": "Physical Abuse/Neglect - Child"
+       },
+       {
+        "value": "physical_abuse_elder",
+        "label": "Physical Abuse/Neglect - Elder"
+       },
+       {
+        "value": "sexual_assault_adult",
+        "label": "Sexual Assault - Adult"
+       },
+       {
+        "value": "sexual_abuse_child",
+        "label": "Sexual Assault/Abuse - Child"
+       },
+       {
+        "value": "sexual_abuse_elder",
+        "label": "Sexual Assault/Abuse- Elder"
+       },
+       {
+        "value": "homicide_survivors",
+        "label": "Survivors of Homicide Victims"
+       },
+       {
+        "value": "unknown",
+        "label": "Unknown Type of Victimization"
+       },
+       {
+        "value": "other_violent",
+        "label": "Other Victims of Violent Crime"
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-SERVICES",
+      "label": "2.5 Victim services provided (instances, not people)",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "accompaniment",
+        "label": "Accompaniment to Hospitals, Law Enforcement Offices, Prosecutors' Offices and Courts",
+        "from": [
+         "accompaniment_hospital",
+         "accompaniment_law_enforcement",
+         "accompaniment_prosecutor",
+         "accompaniment_court"
+        ]
+       },
+       {
+        "value": "advocacy",
+        "label": "Advocacy",
+        "from": [
+         "advocacy"
+        ]
+       },
+       {
+        "value": "cvc",
+        "label": "Assistance with Crime Victims' Compensation",
+        "from": [
+         "cvc_pre_submission",
+         "cvc_post_submission"
+        ]
+       },
+       {
+        "value": "restitution",
+        "label": "Assistance with Restitution",
+        "from": [
+         "restitution"
+        ]
+       },
+       {
+        "value": "savns",
+        "label": "Assistance with Texas SAVNS",
+        "from": [
+         "savns"
+        ]
+       },
+       {
+        "value": "victim_impact_panels",
+        "label": "Assistance with Victim Impact Panels",
+        "from": [
+         "victim_impact_panels"
+        ]
+       },
+       {
+        "value": "victim_impact_statements",
+        "label": "Assistance with Victim Impact Statements",
+        "from": [
+         "victim_impact_statements"
+        ]
+       },
+       {
+        "value": "crisis_intervention",
+        "label": "Crisis Intervention",
+        "from": [
+         "crisis_intervention"
+        ]
+       },
+       {
+        "value": "emergency_funds",
+        "label": "Emergency Funds",
+        "from": [
+         "emergency_funds"
+        ]
+       },
+       {
+        "value": "follow_up",
+        "label": "Follow-up with Victim",
+        "from": [
+         "follow_up"
+        ]
+       },
+       {
+        "value": "groups",
+        "label": "Groups (Support, Therapeutic)",
+        "from": [
+         "support_group"
+        ]
+       },
+       {
+        "value": "individual_counseling",
+        "label": "Individual Counseling",
+        "from": [
+         "individual_counseling"
+        ]
+       },
+       {
+        "value": "information_referral",
+        "label": "Information and Referral",
+        "from": [
+         "information_referral"
+        ]
+       },
+       {
+        "value": "legal_assistance",
+        "label": "Legal Assistance",
+        "from": [
+         "legal_assistance"
+        ]
+       },
+       {
+        "value": "lodging",
+        "label": "Lodging",
+        "from": [
+         "lodging"
+        ]
+       },
+       {
+        "value": "peer_support",
+        "label": "Peer Support Services",
+        "from": [
+         "peer_support"
+        ]
+       },
+       {
+        "value": "transportation",
+        "label": "Transportation",
+        "from": [
+         "transportation"
+        ]
+       },
+       {
+        "value": "other",
+        "label": "Other Direct Victim Services",
+        "from": [
+         "other"
+        ]
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       },
+       {
+        "value": "ytd",
+        "label": "Fiscal year to date"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S4-OTHER-SERVICES",
+      "label": "2.5a Other direct victim services: describe the services counted as \"Other Direct Victim Services\"",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "S4-EMERGENCY-FUNDS",
+      "label": "Emergency Funds paid this quarter ($) — NECX check, not on the OAG sheet",
+      "type": "currency",
+      "source": "computed",
+      "required": true
+     },
+     {
+      "key": "S4-EMERGENCY-FUNDS-YTD",
+      "label": "Emergency Funds paid this grant year ($) — NECX check, not on the OAG sheet",
+      "type": "currency",
+      "source": "computed",
+      "required": true
+     }
+    ]
+   },
+   {
+    "key": "EDUCATION",
+    "title": "3. Grant related activities for the reporting period",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "S5-OUTREACH",
+      "label": "3.1 Outreach (booth attendees as counted; the OAG sheet applies 25%)",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "speeches",
+        "label": "Total Number of Public Speeches"
+       },
+       {
+        "value": "speech_participants",
+        "label": "Total Number of Participants"
+       },
+       {
+        "value": "booths",
+        "label": "Informational Booths"
+       },
+       {
+        "value": "booth_attendees",
+        "label": "Total Attendees at Informational Booths"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      }
+     },
+     {
+      "key": "S5-TRAINING-SESSIONS",
+      "label": "3.2 Victim services training sessions",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "sessions",
+        "label": "Number of all Training Sessions"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      }
+     },
+     {
+      "key": "S5-TRAINED",
+      "label": "3.2 Individuals trained, by audience",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "faith_based",
+        "label": "Faith-Based"
+       },
+       {
+        "value": "law_enforcement",
+        "label": "Law Enforcement"
+       },
+       {
+        "value": "medical",
+        "label": "Medical"
+       },
+       {
+        "value": "prosecution_judicial",
+        "label": "Prosecution/Judicial"
+       },
+       {
+        "value": "school_faculty",
+        "label": "School Faculty"
+       },
+       {
+        "value": "volunteer",
+        "label": "Volunteer"
+       },
+       {
+        "value": "other",
+        "label": "Other"
+       },
+       {
+        "value": "total",
+        "label": "Total"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "totalsAddUp": true
+     },
+     {
+      "key": "S5-ASYNC",
+      "label": "3.3 Asynchronous programming",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "sessions",
+        "label": "Number of Sessions Posted"
+       },
+       {
+        "value": "participants",
+        "label": "Number of Participants"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      }
+     },
+     {
+      "key": "S5-SOCIAL",
+      "label": "3.4 Social media",
+      "type": "matrix",
+      "source": "computed",
+      "required": true,
+      "rows": [
+       {
+        "value": "posts",
+        "label": "Number of Social Media Postings"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "key": "OUTCOMES",
+    "title": "4. Outcomes",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "S6-OUTCOME-DS",
+      "label": "4.1 Direct service outcome: increase in knowledge of crime victims' rights",
+      "type": "matrix",
+      "source": "manual",
+      "required": false,
+      "rows": [
+       {
+        "value": "given",
+        "label": "Number of Instruments Given to Individuals"
+       },
+       {
+        "value": "completed",
+        "label": "Number of Instruments Completed by Individuals"
+       },
+       {
+        "value": "desired",
+        "label": "Individuals Reporting Desired Outcome"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "rowLimits": [
+       {
+        "row": "completed",
+        "notMoreThan": "given"
+       },
+       {
+        "row": "desired",
+        "notMoreThan": "completed"
+       }
+      ]
+     },
+     {
+      "key": "S6-NARRATIVE-DS",
+      "label": "4.1 Outcome narrative",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 4000
+     },
+     {
+      "key": "S6-OUTCOME-OUTREACH",
+      "label": "4.2 Outreach outcome: increase in knowledge of community resources and services",
+      "type": "matrix",
+      "source": "manual",
+      "required": false,
+      "rows": [
+       {
+        "value": "given",
+        "label": "Number of Instruments Given to Individuals"
+       },
+       {
+        "value": "completed",
+        "label": "Number of Instruments Completed by Individuals"
+       },
+       {
+        "value": "desired",
+        "label": "Individuals Reporting Desired Outcome"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "rowLimits": [
+       {
+        "row": "completed",
+        "notMoreThan": "given"
+       },
+       {
+        "row": "desired",
+        "notMoreThan": "completed"
+       }
+      ]
+     },
+     {
+      "key": "S6-NARRATIVE-OUTREACH",
+      "label": "4.2 Outcome narrative",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 4000
+     },
+     {
+      "key": "S6-OUTCOME-TRAINING",
+      "label": "4.3 Training outcome: increase in knowledge of crime victims' rights",
+      "type": "matrix",
+      "source": "manual",
+      "required": false,
+      "rows": [
+       {
+        "value": "given",
+        "label": "Number of Instruments Given to Individuals"
+       },
+       {
+        "value": "completed",
+        "label": "Number of Instruments Completed by Individuals"
+       },
+       {
+        "value": "desired",
+        "label": "Individuals Reporting Desired Outcome"
+       }
+      ],
+      "cols": [
+       {
+        "value": "m1",
+        "label": "Month 1"
+       },
+       {
+        "value": "m2",
+        "label": "Month 2"
+       },
+       {
+        "value": "m3",
+        "label": "Month 3"
+       },
+       {
+        "value": "quarter",
+        "label": "Quarter"
+       }
+      ],
+      "cellType": "integer",
+      "sumCols": {
+       "quarter": [
+        "m1",
+        "m2",
+        "m3"
+       ]
+      },
+      "rowLimits": [
+       {
+        "row": "completed",
+        "notMoreThan": "given"
+       },
+       {
+        "row": "desired",
+        "notMoreThan": "completed"
+       }
+      ]
+     },
+     {
+      "key": "S6-NARRATIVE-TRAINING",
+      "label": "4.3 Outcome narrative",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 4000
+     }
+    ]
+   },
+   {
+    "key": "GOALS",
+    "title": "5. Project goal(s) attainment",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "S5G-GOALS",
+      "label": "5.1 Project goal(s)",
+      "type": "narrative",
+      "source": "profile",
+      "required": false,
+      "maxLength": 4000
+     },
+     {
+      "key": "S5G-EXPENDITURES",
+      "label": "5.2 How your financial expenditures for the quarter relate to your project goal(s)",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 4000
+     }
+    ]
+   },
+   {
+    "key": "NARRATIVES",
+    "title": "6. Grant narratives",
+    "required": true,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "S7-ACTIVITIES",
+      "label": "6.1 Additional grant related activities during the reporting period",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 8000
+     },
+     {
+      "key": "S7-SUCCESSES",
+      "label": "6.2 Successes during the reporting period",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 8000
+     },
+     {
+      "key": "S7-CHALLENGES",
+      "label": "6.3 Challenges you encountered during the reporting period",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 8000
+     },
+     {
+      "key": "S7-PERSONNEL",
+      "label": "6.4 Changes in key personnel",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 8000
+     },
+     {
+      "key": "S7-VACANCIES",
+      "label": "6.5 Grant-funded positions left vacant for more than three months",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 8000
+     }
+    ]
+   },
+   {
+    "key": "REQUIRED_TRAINING",
+    "title": "OAG required training (its own tab on the OAG workbook)",
+    "required": false,
+    "gateKey": null,
+    "questions": [
+     {
+      "key": "RT-CVC-POSITIONS",
+      "label": "Crime Victims' Compensation: grant funded staff position(s) who completed the training",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "RT-CVC-TRAINING",
+      "label": "Crime Victims' Compensation: training name, date and provider",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "RT-ACP-POSITIONS",
+      "label": "Address Confidentiality: grant funded staff position(s) who completed the training",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "RT-ACP-TRAINING",
+      "label": "Address Confidentiality: training name, date and provider",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "RT-CYBER-POSITIONS",
+      "label": "Cyber Security: grant funded staff position(s) who completed the training",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     },
+     {
+      "key": "RT-CYBER-TRAINING",
+      "label": "Cyber Security: training name, date and provider",
+      "type": "narrative",
+      "source": "manual",
+      "required": false,
+      "maxLength": 2000
+     }
+    ]
+   }
+  ]
+ },
+ "type": {
+  "program": "TX_OAG_VCLG",
+  "key": "tx-oag-vclg-qpr",
+  "version": "tx-oag-vclg-qpr-fy2027",
+  "title": "Texas OAG VCLG Quarterly Performance Report",
+  "omb": null,
+  "fundingScope": "grant_only",
+  "periodKinds": [
+   "quarterly"
+  ],
+  "defaultPeriodKind": "quarterly",
+  "defaultDueDate": null,
+  "overlays": [],
+  "quarterStartMonths": [
+   9,
+   12,
+   3,
+   6
+  ],
+  "funder": "Texas Office of the Attorney General",
+  "reportType": "TX_OAG_VCLG_QPR"
+ }
+}

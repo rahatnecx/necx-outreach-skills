@@ -6,7 +6,7 @@ The single source of truth for NECX's personalized multi-thread outreach to vict
 - rank the employee list
 - decide To / CC / BCC
 - write subjects and bodies from verified NECX features
-- produce faceless Remotion video specs
+- render a personalized video per contact: real VS360 screens that show the prospect's agency and name, with voiceover and captions
 
 > **Private repo.** Contains the internal sales process and pricing notes. Never commit real prospect emails, employee exports or CRM data.
 
@@ -15,7 +15,9 @@ The single source of truth for NECX's personalized multi-thread outreach to vict
 | Path | What it is | Used by |
 |---|---|---|
 | `playbook/necx-outreach-playbook.md` | Master rulebook | Everyone; the ChatGPT Knowledge file |
-| `plugins/necx-outreach/skills/necx-outreach-planner/SKILL.md` | Claude skill | Claude (web/desktop) + Claude Code |
+| `plugins/necx-outreach/skills/necx-outreach-planner/SKILL.md` | Claude skill: research, ranking, emails, video plans | Claude (web/desktop) + Claude Code |
+| `plugins/necx-outreach/skills/necx-outreach-video/` | Claude skill: renders the videos; `screens.md` = screen catalog | Claude Code |
+| `plugins/necx-outreach/video/` | Remotion project: renderer, real VS360 screens, capture tools | Claude Code (Node 18+) |
 | `plugins/necx-outreach/.claude-plugin/plugin.json` | Claude plugin manifest | Claude Code / org provisioning |
 | `.claude-plugin/marketplace.json` | Marketplace manifest | `/plugin marketplace add` in Claude Code |
 | `chatgpt/custom-gpt-setup.md` | GPT setup steps + Instructions block | ChatGPT |
@@ -39,6 +41,15 @@ Update later with `/plugin marketplace update necx-outreach`.
 4. Connect **Firecrawl** in Claude. The skill needs it to read JS-rendered sites like necx.org.
 
 Then ask: *"Plan outreach for naplesshelter.org"* and attach the employee list.
+
+### Personalized videos (Claude Code)
+After a plan, ask *"Render the videos"*. The `necx-outreach-video` skill turns each contact's video plan into:
+- an MP4 with real VS360 screens showing **their agency, title and initials** and greeting them by first name
+- an email thumbnail with a play button
+- a GIF preview
+- a review script
+
+The first run installs the video dependencies, which takes about a minute. Set `ELEVENLABS_API_KEY` for the production voice; without it, the macOS voice is used for review. See `plugins/necx-outreach/video/README.md`.
 
 ### ChatGPT
 Follow `chatgpt/custom-gpt-setup.md`: paste the Instructions block and upload `playbook/necx-outreach-playbook.md` as Knowledge. ChatGPT can't pull from GitHub, so the GPT owner re-uploads both after every release.

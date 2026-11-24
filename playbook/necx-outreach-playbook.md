@@ -2,7 +2,7 @@
 ### Instructions for generating prioritized multi-thread emails + faceless Remotion video scripts
 
 > **Who this is for:** an AI agent (Claude) with Firecrawl access, plus the SDR reviewing the output.
-> **What it produces:** for one target organization, a ranked contact plan with To / CC / BCC, subject, body, send date, and a faceless Remotion video spec for every video email. Everything is grounded in verified organization facts and verified NECX features.
+> **What it produces:** for one target organization, a ranked contact plan with To / CC / BCC, subject, body, send date, and a personalized video plan for every video email (real VS360 screens showing the prospect's agency, rendered by the necx-outreach-video skill). Everything is grounded in verified organization facts and verified NECX features.
 > **Golden rule:** every claim about the prospect needs a source URL. Every claim about NECX needs a necx.org or docs.necx.org URL that was fetched in this run. If you can't source a claim, leave it out.
 
 ---
@@ -221,91 +221,66 @@ Each email covers **one** pain and **one** NECX proof point, and asks **one** lo
 
 ## 8. Faceless Remotion video spec
 
-No presenter on camera. Each video uses on-screen text, NECX product screenshots, a voiceover (TTS or a recorded voice-only track) and burned-in captions. All videos render from one reusable Remotion composition driven by per-prospect props.
+No presenter on camera. Videos are on-screen text, **real VS360 screens** (captured from the product with fictional client data) and the prospect's public homepage, plus voiceover, burned-in captions and a ducked music bed. One composition (`OutreachVideo`, 1920x1080, 30 fps, in the plugin's `video/` folder) renders every video from a plan. Timing follows the voiceover, so you don't count frames.
 
-### 8.1 Technical defaults
-- Composition id: `OutreachVideo`; 1920×1080; **30 fps**; `durationInFrames = seconds × 30`.
-- Length: 60–90 s (A/B/F), 45–60 s (C); gatekeeper gets no video.
-- Fonts and colors: NECX brand (pull from necx.org with Firecrawl `branding` format if not supplied).
-- Audio: voiceover track per video plus a low music bed at −24 dB, ducked under the voice.
-- Captions: always on (most viewers watch muted); generate from the voiceover script with `@remotion/captions` timing.
-- Thumbnail: `npx remotion still OutreachVideo --frame=45` showing the title card with the person's first name. Export as a static PNG; no GIF.
+Personalization is built in. On every VS360 screen the app header shows **the prospect's agency, their title and their initials**, and the dashboard says "Good afternoon, <First>".
 
-### 8.2 Scene types (the only building blocks allowed)
+### 8.1 Defaults
+- Length: 60-90 s for A/B/F, 45-60 s for C. The gatekeeper gets no video.
+- Captions always on. Voice: ElevenLabs when a key is set, otherwise the macOS voice (review only).
+- Thumbnail: the title card with a play button and the first name (`thumbnail.jpg`), plus a 3 s `preview.gif`.
 
-| Scene type | What it shows | Props |
-|---|---|---|
-| `TitleCard` | "For <First name>, <Title> · <Org>" plus a one-line topic | `firstName`, `title`, `org`, `topic` |
-| `WebsiteFrame` | Prospect's **public homepage** screenshot in a browser frame, slow zoom | `screenshotUrl` |
-| `ProblemCard` | Bold pain line, 1–2 short lines of text | `headline`, `sub` |
-| `ProductScreen` | NECX screenshot with a highlight box + zoom on the relevant area | `asset`, `highlight {x,y,w,h}`, `caption` |
-| `StatCard` | One verified number (e.g., "67/67 manifest files · 0 failures" from the demo validator) | `value`, `label`, `sourceNote` |
-| `CheckList` | 2–3 ticks appearing one by one | `items[]` |
-| `PricingCard` | Core / Complete prices, "no per-user fees" | `tiers[]` |
-| `CTACard` | The question from the email + sender name and email | `cta`, `senderName`, `senderEmail` |
+### 8.2 Scene types (only these)
+- **title:** "A short video for <First>", their title and agency, and `topic`, beside a VS360 window carrying their agency name.
+- **website:** the prospect's public homepage screenshot (`image` = Firecrawl screenshot URL), slow zoom.
+- **problem:** `headline` (wrap words in *stars* for the brand color) plus up to 2 `lines`.
+- **screen:** a real VS360 screen by catalog id (`necx-outreach-video/screens.md`), with verified title/body, highlight and zoom. Consecutive screens become one guided tour.
+- **checklist:** `headline` plus 2-4 `items`.
+- **stat:** one verified `value` plus `label` and `source`.
+- **cta:** the email's `question`; the sender name and email are added automatically.
 
-### 8.3 Allowed visual assets
-- **NECX:** screenshots from the NECX **demo agency** only. Known assets: `https://necx.org/__l5e/assets-v1/9b922f79-eb5d-45dd-989b-79229d02fdf0/shelter-overview.png` (bed board) and `https://necx.org/__l5e/assets-v1/f6f02a22-c625-4890-82e2-8c5f173412dc/sage-validator.png` (Sage Validator). Capture others from docs.necx.org guides with Firecrawl `screenshot` (Reports, Cases, Shelters, Hotline, Staff, Notes, Time).
-- **Prospect:** the public homepage screenshot and the org's name as text. Nothing else.
-- **Never:** photos of the prospect's buildings, staff, residents or events; maps; addresses; their logo reworked into NECX graphics; real client data; stock images of injured people or distress.
+### 8.3 Allowed assets
+- **NECX:** only screens from the catalog. Their default title/body are verified copy; override them only with claims verified on necx.org or docs.necx.org in this run.
+- **Prospect:** the public homepage screenshot, and their name, title and agency as text.
+- **Never:** their buildings, staff, residents, events, maps, addresses, reworked logos, real client data, or distress imagery.
 
-### 8.4 Storyboards by persona
+### 8.4 Storyboards (screen ids from the catalog)
 
-**A. Reporting owner (75 s = 2250 frames)**
+**A. Reporting owner (~75 s):** title -> problem (the cycle they rebuild by hand) -> screen `dashboard` -> screen `reports-case-grant` -> screen(s) for their funders (`voca-ready`, `hud-sage-ready`, `fvpsa-report`, `stop-home`, `hhsc-generate`, `vclg-signoff`) -> screen `fvpsa-explain` or `ai-accuracy` -> checklist -> cta.
 
-| # | Frames | Scene | On-screen text | Voiceover |
-|---|---|---|---|---|
-| 1 | 0–150 | TitleCard | "For <First>, <Title> · <Org>" | "<First>, this is a short video for you from <Sender> at NECX." |
-| 2 | 150–300 | WebsiteFrame | — | "You're likely the person who brings <Org>'s <funder list> numbers together each cycle." |
-| 3 | 300–900 | ProductScreen (Reports → grant setup) | "Upload the grant → questions built into intake" | "Upload the grant document and NECX generates that funder's questions. They're linked to intake, so advocates answer them as they work cases." |
-| 4 | 900–1650 | ProductScreen (Sage Validator) + StatCard | "Checked like Sage, before export" | "At report time, the built-in validator runs the same checks Sage runs, then exports Sage-ready files." |
-| 5 | 1650–1950 | CheckList | "AI fills cells · shows confidence · you approve" | "Every number traces back to its cases, and the AI never makes one up." |
-| 6 | 1950–2250 | CTACard | "<CTA>" | "Send any export and we'll run it live in 30 minutes, or point me to the right person." |
+**B. Operations (~90 s):** title -> problem ("<n> programs, one live view") -> screen `dashboard` -> `shelter-board` -> `shelter-waitlist` or `hotline-command` -> `referral-sharing` -> checklist (role-based access · audit trail · one license, unlimited staff) -> cta.
 
-**B. Operations sponsor (90 s = 2700 frames):** TitleCard → ProblemCard ("<n> programs, one live view") → ProductScreen (shelter overview: occupancy, waitlist, partner beds) → ProductScreen (past-expected-stay alert, check-in) → CheckList (role-based access · audit trail · families on check-in) → ProductScreen (Reports/CAPER) → CheckList (every module, one license · unlimited staff · live in 48–72 h) → CTACard.
+**C. Admin/IT (~50 s, after a reply only):** title -> screen `staff-roles` -> `staff-role-actions` -> `cases-consent` -> checklist (tenant isolation · audit trail · you own your data) -> cta (security docs under NDA).
 
-**C. Admin/IT (50 s = 1500 frames, send only after a reply):** TitleCard → ProductScreen (Staff roles & sign-in verification) → ProductScreen (audit trail / referral consent field by field) → CheckList (tenant isolation · immutable audit trail · you own your data) → CTACard ("Security docs available under NDA").
+**F. Executive (~60 s):** title (verified recognition line in `topic`) -> screen `dashboard` -> one reporting screen -> `board-charts` -> stat (pricing or go-live, verified) -> cta.
 
-**F. Executive (60 s = 1800 frames):** TitleCard (with one recognition line, if verified) → three 15-second blocks: Reporting (ProductScreen), Operations (ProductScreen), Cost (PricingCard + "typically an allowable grant expense") → CTACard ("If it's worth 30 minutes, reply. If not, thank you for the work you do.").
-
-### 8.5 Props JSON (one per video, consumed by `OutreachVideo`)
-
+### 8.5 Plan JSON (one file per org, one entry per video)
 ```json
 {
-  "videoId": "the-shelter-romina-01",
-  "fps": 30,
-  "width": 1920,
-  "height": 1080,
-  "durationInFrames": 2250,
-  "recipient": { "firstName": "Romina", "title": "Contracts & Reporting Manager", "org": "The Shelter for Abused Women & Children" },
-  "voice": { "mode": "tts", "voiceId": "<chosen voice>", "pace": "calm" },
-  "brand": { "primary": "#<from necx.org>", "font": "<from necx.org>" },
-  "scenes": [
-    { "type": "TitleCard", "from": 0, "duration": 150, "props": { "topic": "Funder reporting at The Shelter" },
-      "vo": "Romina, this is a short video for you from Tonmoy at NECX." },
-    { "type": "WebsiteFrame", "from": 150, "duration": 150, "props": { "screenshotUrl": "<firecrawl screenshot of public homepage>" },
-      "vo": "You're likely the person who brings The Shelter's ESG, VOCA and FVPSA numbers together each cycle." },
-    { "type": "ProductScreen", "from": 300, "duration": 600,
-      "props": { "asset": "<docs.necx.org/guides/reports screenshot>", "highlight": { "x": 0.1, "y": 0.2, "w": 0.5, "h": 0.3 }, "caption": "Upload the grant → questions built into intake" },
-      "vo": "Upload the grant document and NECX generates that funder's questions..." },
-    { "type": "ProductScreen", "from": 900, "duration": 750,
-      "props": { "asset": "https://necx.org/__l5e/assets-v1/f6f02a22-c625-4890-82e2-8c5f173412dc/sage-validator.png", "caption": "Checked like Sage, before export" },
-      "vo": "At report time, the built-in validator runs the same checks Sage runs..." },
-    { "type": "CheckList", "from": 1650, "duration": 300,
-      "props": { "items": ["AI fills cells", "Shows confidence", "You approve"] },
-      "vo": "Every number traces back to its cases, and the AI never makes one up." },
-    { "type": "CTACard", "from": 1950, "duration": 300,
-      "props": { "cta": "Send any export: we'll run it live in 30 min", "senderName": "Tonmoy Ahmed", "senderEmail": "stahmed@necx.org" },
-      "vo": "Send any export and we'll run it live in 30 minutes, or point me to the right person." }
-  ],
-  "captions": true,
-  "music": { "track": "<license-free bed>", "volumeDb": -24 },
-  "thumbnailFrame": 45,
-  "sources": ["https://necx.org/", "https://necx.org/shelter-management", "https://docs.necx.org/"]
+  "sender": { "name": "", "title": "Partnerships, NECX", "email": "<name>@necx.org" },
+  "defaults": { "voice": { "provider": "auto" }, "music": true, "captions": true, "personalizeScreens": true },
+  "videos": [
+    {
+      "videoId": "<org>-<first>-01", "persona": "A",
+      "recipient": { "firstName": "", "lastName": "", "title": "", "org": "" },
+      "scenes": [
+        { "type": "title", "topic": "", "vo": "<First>, I put this short video together for you, about ..." },
+        { "type": "problem", "headline": "", "lines": [""], "vo": "" },
+        { "type": "screen", "screen": "dashboard", "vo": "" },
+        { "type": "screen", "screen": "reports-case-grant", "vo": "" },
+        { "type": "checklist", "headline": "", "items": ["", "", ""], "vo": "" },
+        { "type": "cta", "question": "", "vo": "" }
+      ],
+      "sources": []
+    }
+  ]
 }
 ```
 
-**Voiceover rules:** about 140–150 words per minute (a 75 s video ≈ 180 words max). Every scene's `vo` must fit its duration (words ÷ 2.4 ≤ seconds). Write in second person, calm and plain. Never say "I" as if on camera. Say "this video" or "I put this together."
+**Voiceover:**
+- About 150 words per minute. One idea per scene, at most about 30 words.
+- Second person, calm and plain.
+- Say "I put this together", never as if on camera.
 
 ---
 
@@ -350,8 +325,8 @@ Excluded: <names + reason>
 **Bump (date):** …
 
 ### Video spec — <Name>
-<storyboard table>
-<props JSON>
+<storyboard table: # | scene | screen/on-screen | voiceover>
+(the full plan JSON for all videos goes in one block at the end, ready for the necx-outreach-video skill)
 
 ## After a reply
 <CFO / end-user intro plan>

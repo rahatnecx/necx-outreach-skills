@@ -1,0 +1,26 @@
+{
+  "sender": { "name": "Jordan Avery", "title": "Partnerships, NECX", "email": "jordan@necx.org" },
+  "defaults": {
+    "voice": { "provider": "auto" },
+    "music": true,
+    "captions": true,
+    "personalizeScreens": true
+  },
+  "videos": [
+    {
+      "videoId": "riverbend-priya-01",
+      "persona": "A",
+      "recipient": { "firstName": "Priya", "lastName": "Shah", "title": "Grants Manager", "org": "Riverbend Family Shelter" },
+      "scenes": [
+        { "type": "title", "topic": "Grant reports without the quarter-end scramble", "vo": "Priya, I put this short video together for you, about grant reporting at Riverbend Family Shelter." },
+        { "type": "problem", "headline": "Every quarter, the *numbers* get rebuilt by hand.", "lines": ["Services logged in one place, demographics in another", "VOCA, FVPSA and HUD each want them their own way"], "vo": "Most shelters rebuild their funder numbers by hand every quarter, from services logged in one place and demographics in another." },
+        { "type": "screen", "screen": "dashboard", "vo": "Here's what that looks like in NECX, with your agency's name on it." },
+        { "type": "screen", "screen": "reports-case-grant", "vo": "In NECX, every case is tagged to the grant that funds it, so services count toward the right grant from day one." },
+        { "type": "screen", "screen": "voca-ready", "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off." },
+        { "type": "screen", "screen": "fvpsa-explain", "vo": "Click Explain to see every record behind a number, and anything left out." },
+        { "type": "checklist", "headline": "Less rebuilding. More *confidence.*", "items": ["Every case tagged to its grant", "Checked before you certify", "Every number explained"], "vo": "Every case tagged to its grant, checked before you certify, and every number explained." },
+        { "type": "cta", "question": "Would it help to see your last VOCA quarter built this way?", "vo": "Would it help to see your last VOCA quarter built this way? Just reply to this email." }
+      ]
+    }
+  ]
+}

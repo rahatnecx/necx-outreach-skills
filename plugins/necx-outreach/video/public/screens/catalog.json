@@ -1,0 +1,958 @@
+{
+  "width": 1440,
+  "height": 900,
+  "screens": {
+    "dashboard": {
+      "module": "dashboard",
+      "title": "Your day at a glance",
+      "body": "Caseload, shelter beds, the hotline and what needs attention, the moment staff sign in.",
+      "vo": null,
+      "target": {
+        "x": 96,
+        "y": 204,
+        "w": 1328,
+        "h": 124
+      },
+      "zoom": 1,
+      "from": "why/dashboard"
+    },
+    "cases-overview": {
+      "module": "cases",
+      "title": "One client, every service",
+      "body": "Legal advocacy, a shelter bed and counseling for one client, held together in one case file.",
+      "vo": "Elena came to you for legal help, a shelter bed, and counseling. In VS360, that's one client, and one case file.",
+      "target": {
+        "x": 470,
+        "y": 280,
+        "w": 955,
+        "h": 225
+      },
+      "zoom": 1.35,
+      "from": "cases/overview"
+    },
+    "cases-consent": {
+      "module": "cases",
+      "title": "Demographics, by consent",
+      "body": "Demographics are kept for each case. When the client has given consent, your edits save immediately.",
+      "vo": "Demographics are kept for each case. If the client has already given consent, your edits save right away.",
+      "target": {
+        "x": 490,
+        "y": 515,
+        "w": 935,
+        "h": 290
+      },
+      "zoom": 1.45,
+      "from": "cases/demo-consent"
+    },
+    "cases-documents": {
+      "module": "cases",
+      "title": "Documents for e-signature",
+      "body": "Send documents for signature by the client, staff, or both. Clients sign in the NECX app.",
+      "vo": "Send documents for signature, and the client signs right in the NECX app.",
+      "target": {
+        "x": 480,
+        "y": 600,
+        "w": 945,
+        "h": 295
+      },
+      "zoom": 1.4,
+      "from": "cases/tab-documents"
+    },
+    "cases-notes": {
+      "module": "cases",
+      "title": "Case notes",
+      "body": "Notes for your team, kept on the case.",
+      "vo": "Keep notes for your team,",
+      "target": {
+        "x": 480,
+        "y": 560,
+        "w": 945,
+        "h": 335
+      },
+      "zoom": 1.35,
+      "from": "cases/tab-notes"
+    },
+    "cases-chat": {
+      "module": "cases",
+      "title": "Secure case chat",
+      "body": "Message the client right on the case.",
+      "vo": "Chat with the client, right on the case.",
+      "target": {
+        "x": 480,
+        "y": 560,
+        "w": 945,
+        "h": 335
+      },
+      "zoom": 1.35,
+      "from": "cases/tab-chat"
+    },
+    "cases-staff": {
+      "module": "cases",
+      "title": "Staff tagging",
+      "body": "Tag the staff working the case.",
+      "vo": "Tag the staff working the case,",
+      "target": {
+        "x": 479,
+        "y": 640,
+        "w": 935,
+        "h": 175
+      },
+      "zoom": 1.45,
+      "from": "cases/staff"
+    },
+    "cases-partners": {
+      "module": "cases",
+      "title": "Partner agency tagging",
+      "body": "Tag the partner agencies in your network that are helping.",
+      "vo": "and the partner agencies helping.",
+      "target": {
+        "x": 479,
+        "y": 545,
+        "w": 935,
+        "h": 165
+      },
+      "zoom": 1.45,
+      "from": "cases/partners"
+    },
+    "cases-preassessment": {
+      "module": "cases",
+      "title": "Send a pre-assessment",
+      "body": "Send it to a new or existing client in a few steps.",
+      "vo": "Then send a pre-assessment to a new or existing client.",
+      "target": {
+        "x": 410,
+        "y": 194,
+        "w": 620,
+        "h": 511
+      },
+      "zoom": 1.3,
+      "from": "cases/send-pre"
+    },
+    "referral-sharing": {
+      "module": "referrals",
+      "title": "Referrals: share only what you choose",
+      "body": "Refer a case to a partner agency, and pick exactly what goes with it.",
+      "vo": "Referrals: send a case to a partner, and choose exactly what goes with it.",
+      "target": {
+        "x": 266,
+        "y": 130,
+        "w": 906,
+        "h": 640
+      },
+      "zoom": 1.05,
+      "from": "why/refer-sharing"
+    },
+    "hotline-command": {
+      "module": "hotline",
+      "title": "Your numbers, your lines",
+      "body": "Dedicated hotline numbers for your agency, each line answered by your own team.",
+      "vo": "Get dedicated hotline numbers for your agency. Your numbers, your lines.",
+      "target": {
+        "x": 430,
+        "y": 405,
+        "w": 550,
+        "h": 140
+      },
+      "zoom": 1.4,
+      "from": "hotline/command"
+    },
+    "hotline-callbacks": {
+      "module": "hotline",
+      "title": "Callbacks that don't slip",
+      "body": "Every promised callback is scheduled with a date and owner. Overdue ones are flagged.",
+      "vo": "Every callback is scheduled, and overdue ones are flagged, so nothing slips.",
+      "target": {
+        "x": 108,
+        "y": 225,
+        "w": 600,
+        "h": 44
+      },
+      "zoom": 1.6,
+      "from": "hotline/callbacks"
+    },
+    "hotline-missed": {
+      "module": "hotline",
+      "title": "No missed call forgotten",
+      "body": "Missed calls wait in their own list, by line, ready to call back.",
+      "vo": "Missed calls wait in their own list, ready to return.",
+      "target": {
+        "x": 105,
+        "y": 235,
+        "w": 1300,
+        "h": 450
+      },
+      "zoom": 1.1,
+      "from": "hotline/missed"
+    },
+    "hotline-log": {
+      "module": "hotline",
+      "title": "Every call, on the record",
+      "body": "Line, staff, category and outcome for every call. Filter it, or export to CSV.",
+      "vo": "Every call is on the record, by line, staff, and outcome.",
+      "target": {
+        "x": 97,
+        "y": 335,
+        "w": 1330,
+        "h": 260
+      },
+      "zoom": 1.1,
+      "from": "hotline/log"
+    },
+    "hotline-analytics": {
+      "module": "hotline",
+      "title": "Know your line",
+      "body": "Calls by day and hour, categories, staff performance and cases created.",
+      "vo": "And analytics show your call volume, peak hours, and team performance.",
+      "target": {
+        "x": 97,
+        "y": 232,
+        "w": 1320,
+        "h": 430
+      },
+      "zoom": 1.1,
+      "from": "hotline/analytics"
+    },
+    "hotline-roles": {
+      "module": "hotline",
+      "title": "Private by design",
+      "body": "You choose who gets hotline access, section by section. Transcript access is audit-logged.",
+      "vo": "Private by design. You choose exactly who gets hotline access, section by section, and transcript access is audit logged.",
+      "target": {
+        "x": 280,
+        "y": 405,
+        "w": 520,
+        "h": 305
+      },
+      "zoom": 1.4,
+      "from": "hotline/roles"
+    },
+    "shelter-board": {
+      "module": "shelters",
+      "title": "A bed board, not a whiteboard",
+      "body": "Available, occupied, reserved, maintenance, out of service. Tonight's count is the real count.",
+      "vo": "A bed board, not a whiteboard. Every bed is available, occupied, reserved, or out of service, so tonight's count is the real count.",
+      "target": {
+        "x": 96,
+        "y": 465,
+        "w": 1330,
+        "h": 430
+      },
+      "zoom": 1.15,
+      "from": "shelters/board"
+    },
+    "shelter-checkin": {
+      "module": "shelters",
+      "title": "Walk-in check-in, in minutes",
+      "body": "Checking in a new client creates their record on the spot. Shelter intake and case intake are one step.",
+      "vo": "Check in a walk-in in minutes. The client record is created on the spot.",
+      "target": {
+        "x": 410,
+        "y": 45,
+        "w": 620,
+        "h": 810
+      },
+      "zoom": 1.1,
+      "from": "shelters/assign"
+    },
+    "shelter-waitlist": {
+      "module": "shelters",
+      "title": "Waitlist, beside your beds",
+      "body": "Priority, party size and bed preference, ready to assign when a bed opens.",
+      "vo": "Your waitlist sits right beside your beds.",
+      "target": {
+        "x": 96,
+        "y": 400,
+        "w": 1330,
+        "h": 330
+      },
+      "zoom": 1.15,
+      "from": "shelters/waitlist"
+    },
+    "shelter-rollcall": {
+      "module": "shelters",
+      "title": "Nightly roll call",
+      "body": "One card per stay, families included. Untick whoever didn't sleep here.",
+      "vo": "Take the nightly roll call, one card per stay.",
+      "target": {
+        "x": 420,
+        "y": 240,
+        "w": 600,
+        "h": 560
+      },
+      "zoom": 1.2,
+      "from": "shelters/rollcall"
+    },
+    "shelter-transfer": {
+      "module": "shelters",
+      "title": "Transfers across locations",
+      "body": "Move a client to any open bed, at any of your shelters.",
+      "vo": "Move a client to any open bed, at any of your locations.",
+      "target": {
+        "x": 410,
+        "y": 380,
+        "w": 620,
+        "h": 260
+      },
+      "zoom": 1.4,
+      "from": "shelters/transfer"
+    },
+    "shelter-partners": {
+      "module": "shelters",
+      "title": "Partner shelters",
+      "body": "See open beds at your partner agencies. Availability only, never bed details.",
+      "vo": "See open beds at your partner agencies,",
+      "target": {
+        "x": 96,
+        "y": 470,
+        "w": 1330,
+        "h": 200
+      },
+      "zoom": 1.2,
+      "from": "shelters/partners"
+    },
+    "shelter-app-requests": {
+      "module": "shelters",
+      "title": "Requests from the NECX app",
+      "body": "Bed requests from clients' phones arrive in their own inbox: accept, waitlist or decline.",
+      "vo": "Bed requests from the NECX app arrive in their own inbox.",
+      "target": {
+        "x": 96,
+        "y": 410,
+        "w": 1330,
+        "h": 205
+      },
+      "zoom": 1.2,
+      "from": "shelters/mobile"
+    },
+    "shelter-incidents": {
+      "module": "shelters",
+      "title": "Incidents, on record",
+      "body": "Log incidents by type and severity, right where they happened.",
+      "vo": "Log incidents where they happen.",
+      "target": {
+        "x": 96,
+        "y": 390,
+        "w": 1330,
+        "h": 210
+      },
+      "zoom": 1.2,
+      "from": "shelters/incidents"
+    },
+    "reports-library": {
+      "module": "reports",
+      "title": "The NECX Reports Library",
+      "body": "Every validator, funder report and grant tool your agency has, in one place.",
+      "vo": "So the NECX Reports Library puts every funder report in one place.",
+      "target": {
+        "x": 96,
+        "y": 125,
+        "w": 1330,
+        "h": 690
+      },
+      "zoom": 1.05,
+      "from": "reports/library"
+    },
+    "reports-grants": {
+      "module": "reports",
+      "title": "Grants, set up once",
+      "body": "VOCA, FVPSA, VAWA STOP, HHSC: each grant with its program, contract dates and template.",
+      "vo": "Set up each grant once, with its program and contract dates,",
+      "target": {
+        "x": 96,
+        "y": 320,
+        "w": 1340,
+        "h": 330
+      },
+      "zoom": 1.15,
+      "from": "reports/grants"
+    },
+    "reports-case-grant": {
+      "module": "reports",
+      "title": "Every case, tagged to its grant",
+      "body": "Each case carries its funding source, so services count toward the right grant from day one.",
+      "vo": "In VS360, every case is tagged to the grant that funds it,",
+      "target": {
+        "x": 470,
+        "y": 316,
+        "w": 800,
+        "h": 64
+      },
+      "zoom": 1.6,
+      "from": "reports/case-grant"
+    },
+    "reports-grant-form": {
+      "module": "reports",
+      "title": "The numbers funders ask for",
+      "body": "Federal award number, state-assigned subaward number, project dates.",
+      "vo": "and the award numbers your funders ask for.",
+      "target": {
+        "x": 420,
+        "y": 450,
+        "w": 600,
+        "h": 330
+      },
+      "zoom": 1.3,
+      "from": "reports/grant-form"
+    },
+    "reports-staff-hours": {
+      "module": "reports",
+      "title": "Staff time, by funding source",
+      "body": "Hours logged against each grant, by staff member, for any date range.",
+      "vo": "and staff time is logged against each funding source.",
+      "target": {
+        "x": 96,
+        "y": 180,
+        "w": 1340,
+        "h": 600
+      },
+      "zoom": 1.1,
+      "from": "reports/staff-hours"
+    },
+    "ai-builder": {
+      "module": "reports",
+      "title": "The NECX AI report builder",
+      "body": "Board reports, grant progress reports, quarterly summaries, annual impact reports.",
+      "vo": "And for board reports, grant progress reports, and annual impact reports, the NECX AI report builder writes them for you.",
+      "target": {
+        "x": 330,
+        "y": 250,
+        "w": 850,
+        "h": 400
+      },
+      "zoom": 1.25,
+      "from": "reports/builder-landing"
+    },
+    "ai-report": {
+      "module": "reports",
+      "title": "Built from your live data",
+      "body": "Charts, KPIs, tables and narrative, in your agency's name.",
+      "vo": "Charts, tables, and narrative, built from your live data.",
+      "target": {
+        "x": 115,
+        "y": 170,
+        "w": 905,
+        "h": 720
+      },
+      "zoom": 1.1,
+      "from": "reports/ai-report"
+    },
+    "ai-accuracy": {
+      "module": "reports",
+      "title": "Every figure, traced",
+      "body": "Each number is traced back to your database or files. Anything not in the source is flagged.",
+      "vo": "And every figure is traced back to its source, so you can trust what you send.",
+      "target": {
+        "x": 495,
+        "y": 85,
+        "w": 445,
+        "h": 710
+      },
+      "zoom": 1.2,
+      "from": "reports/accuracy"
+    },
+    "board-charts": {
+      "module": "reports",
+      "title": "Ready to present",
+      "body": "Trends by month, services by program, and breakdowns your board can read at a glance.",
+      "vo": "Charts, trends, and breakdowns, ready to present.",
+      "target": {
+        "x": 150,
+        "y": 230,
+        "w": 850,
+        "h": 640
+      },
+      "zoom": 1.05,
+      "from": "board/board-charts"
+    },
+    "voca-ready": {
+      "module": "voca",
+      "title": "VOCA: ready for sign-off",
+      "body": "The OVC PMT screen sheet, built from logged VOCA services and case demographics, checked against OVC's own rules.",
+      "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off.",
+      "target": {
+        "x": 96,
+        "y": 240,
+        "w": 1340,
+        "h": 480
+      },
+      "zoom": 1.1,
+      "from": "reports/voca"
+    },
+    "voca-log-service": {
+      "module": "voca",
+      "title": "Log VOCA services as you go",
+      "body": "Category A to E, subcategory, units and date, plus victim compensation help (Q6).",
+      "vo": "Staff log each VOCA service as they deliver it: the category, the subcategory, and the units.",
+      "target": {
+        "x": 495,
+        "y": 115,
+        "w": 450,
+        "h": 670
+      },
+      "zoom": 1.2,
+      "from": "voca/log-service"
+    },
+    "voca-generate": {
+      "module": "voca",
+      "title": "Quarter end: pick and generate",
+      "body": "Choose the grant, the federal fiscal year and the quarter.",
+      "vo": "At quarter end, open the VOCA report, and pick the grant, the federal fiscal year, and the quarter.",
+      "target": {
+        "x": 105,
+        "y": 195,
+        "w": 1310,
+        "h": 215
+      },
+      "zoom": 1.15,
+      "from": "voca/validator"
+    },
+    "voca-sheet": {
+      "module": "voca",
+      "title": "Q1 to Q6, done",
+      "body": "Individuals served, new individuals, victimizations and compensation help.",
+      "vo": "Totals, new individuals, victimizations,",
+      "target": {
+        "x": 112,
+        "y": 190,
+        "w": 1295,
+        "h": 305
+      },
+      "zoom": 1.2,
+      "from": "voca/sheet"
+    },
+    "voca-reminders": {
+      "module": "voca",
+      "title": "Never miss a quarter",
+      "body": "Federal fiscal quarters and due-date reminders, right on the page.",
+      "vo": "Reminders keep the federal fiscal quarters and due dates in front of your team,",
+      "target": {
+        "x": 105,
+        "y": 185,
+        "w": 1310,
+        "h": 160
+      },
+      "zoom": 1.4,
+      "from": "voca/reminders"
+    },
+    "hud-projects": {
+      "module": "hud",
+      "title": "Set up once for HUD",
+      "body": "Your HMIS organization ID, and HUD 2.01: a victim service provider reporting from a comparable database.",
+      "vo": "Set your agency up once for HUD, as a victim service provider.",
+      "target": {
+        "x": 220,
+        "y": 270,
+        "w": 1090,
+        "h": 300
+      },
+      "zoom": 1.15,
+      "from": "hud/projects"
+    },
+    "hud-rollcall": {
+      "module": "hud",
+      "title": "Bed nights, every night",
+      "body": "The nightly roll call records who slept here (HUD 4.14).",
+      "vo": "The nightly roll call records bed nights,",
+      "target": {
+        "x": 420,
+        "y": 240,
+        "w": 600,
+        "h": 560
+      },
+      "zoom": 1.2,
+      "from": "hud/rollcall"
+    },
+    "hud-missing": {
+      "module": "hud",
+      "title": "Missing HUD Data",
+      "body": "Who in the project is still missing HUD elements, and a link to fix each one.",
+      "vo": "Before you report, Missing HUD Data shows exactly who is missing what, with a link to fix it.",
+      "target": {
+        "x": 110,
+        "y": 275,
+        "w": 1300,
+        "h": 345
+      },
+      "zoom": 1.15,
+      "from": "hud/missing"
+    },
+    "hud-sage-ready": {
+      "module": "hud",
+      "title": "Ready for Sage submission",
+      "body": "The APR is built from your records and checked the way Sage checks it.",
+      "vo": "It builds the APR, and checks it the way Sage does. Ready for Sage submission.",
+      "target": {
+        "x": 110,
+        "y": 610,
+        "w": 1310,
+        "h": 130
+      },
+      "zoom": 1.4,
+      "from": "hud/sage-ready"
+    },
+    "hud-sage-rules": {
+      "module": "hud",
+      "title": "Checked file by file",
+      "body": "Header, row and column counts, and HUD's rules for every table.",
+      "vo": "Every file is checked for structure, row by row.",
+      "target": {
+        "x": 110,
+        "y": 290,
+        "w": 1310,
+        "h": 600
+      },
+      "zoom": 1.05,
+      "from": "hud/sage-rules"
+    },
+    "fvpsa-report": {
+      "module": "fvpsa",
+      "title": "FVPSA PPR, filled from your records",
+      "body": "Shelter nights from your bed board, crisis calls from your hotline, with last year's figure beside each one.",
+      "vo": "The FVPSA Performance Progress Report fills itself: shelter nights from your bed board, crisis calls from your hotline.",
+      "target": {
+        "x": 425,
+        "y": 285,
+        "w": 1005,
+        "h": 370
+      },
+      "zoom": 1.2,
+      "from": "reports/fvpsa-c"
+    },
+    "fvpsa-explain": {
+      "module": "fvpsa",
+      "title": "Explain any number",
+      "body": "Every roll-call night behind a number, and every record left out, with the reason.",
+      "vo": "Click Explain to see every record behind a number, and anything left out.",
+      "target": {
+        "x": 665,
+        "y": 10,
+        "w": 770,
+        "h": 730
+      },
+      "zoom": 1.05,
+      "from": "fvpsa/explain"
+    },
+    "fvpsa-quality": {
+      "module": "fvpsa",
+      "title": "Checked before you certify",
+      "body": "Big changes from last year are flagged for review.",
+      "vo": "Checks flag big changes from last year,",
+      "target": {
+        "x": 96,
+        "y": 290,
+        "w": 1340,
+        "h": 90
+      },
+      "zoom": 1.6,
+      "from": "fvpsa/quality"
+    },
+    "stop-home": {
+      "module": "stop",
+      "title": "The STOP report",
+      "body": "STOP and SASP subgrantee annual progress reports, in one place.",
+      "vo": "At report time, open the STOP report.",
+      "target": {
+        "x": 96,
+        "y": 180,
+        "w": 1340,
+        "h": 520
+      },
+      "zoom": 1.1,
+      "from": "stop/vawa-home"
+    },
+    "stop-victims": {
+      "module": "stop",
+      "title": "Victims served, calculated",
+      "body": "Victims seeking services by victimization: served, partially served, and not served.",
+      "vo": "Victim Services is filled from your records: who sought services, served, partially served, or not served.",
+      "target": {
+        "x": 430,
+        "y": 540,
+        "w": 990,
+        "h": 270
+      },
+      "zoom": 1.3,
+      "from": "stop/vs-1"
+    },
+    "stop-legal": {
+      "module": "stop",
+      "title": "Legal matters and protection orders",
+      "body": "Legal issues, providers and outcomes, and protection orders requested and granted.",
+      "vo": "and legal matters and protection orders.",
+      "target": {
+        "x": 505,
+        "y": 385,
+        "w": 880,
+        "h": 410
+      },
+      "zoom": 1.2,
+      "from": "stop/case-legal"
+    },
+    "stop-quality": {
+      "module": "stop",
+      "title": "Checked before approval",
+      "body": "Large year-over-year changes are flagged for review.",
+      "vo": "Checks flag big year-over-year changes before approval,",
+      "target": {
+        "x": 96,
+        "y": 295,
+        "w": 1340,
+        "h": 80
+      },
+      "zoom": 1.6,
+      "from": "stop/quality"
+    },
+    "hhsc-generate": {
+      "module": "hhsc",
+      "title": "Pick the month, generate",
+      "body": "NECX builds the month's DAL7 files from your own records and checks them. Ready for sign-off.",
+      "vo": "At month end, pick the month and click Generate. NECX builds every file, and checks it. Ready for sign-off.",
+      "target": {
+        "x": 110,
+        "y": 295,
+        "w": 1310,
+        "h": 270
+      },
+      "zoom": 1.25,
+      "from": "hhsc/ready"
+    },
+    "hhsc-files": {
+      "module": "hhsc",
+      "title": "All 11 DAL7 files",
+      "body": "Line counts, records passed and failed, and warnings, file by file.",
+      "vo": "All eleven files, with every record passed, and nothing failed.",
+      "target": {
+        "x": 110,
+        "y": 150,
+        "w": 1300,
+        "h": 575
+      },
+      "zoom": 1.05,
+      "from": "hhsc/files"
+    },
+    "hhsc-hotline": {
+      "module": "hhsc",
+      "title": "Hotline calls, by HHSC topic",
+      "body": "Each call's wrap-up records the HHSC call topic for the hotline report.",
+      "vo": "and every hotline call is wrapped up with its HHSC call topic.",
+      "target": {
+        "x": 385,
+        "y": 380,
+        "w": 670,
+        "h": 90
+      },
+      "zoom": 1.7,
+      "from": "hhsc/hotline-hhsc"
+    },
+    "vclg-quality": {
+      "module": "vclg",
+      "title": "Caught before the OAG sees it",
+      "body": "A hospital accompaniment under 45 minutes, a service by unfunded staff, a missing age.",
+      "vo": "Checks catch what the OAG would: a hospital accompaniment under forty-five minutes, or a service by unfunded staff.",
+      "target": {
+        "x": 96,
+        "y": 560,
+        "w": 1340,
+        "h": 330
+      },
+      "zoom": 1.1,
+      "from": "vclg/quality"
+    },
+    "vclg-signoff": {
+      "module": "vclg",
+      "title": "Signed by the Grant Contact",
+      "body": "Section 7 data verification: initials and date go into the workbook.",
+      "vo": "Then the Grant Contact signs off,",
+      "target": {
+        "x": 490,
+        "y": 50,
+        "w": 460,
+        "h": 430
+      },
+      "zoom": 1.5,
+      "from": "vclg/signoff"
+    },
+    "staff-roles": {
+      "module": "access",
+      "title": "Roles that fit your agency",
+      "body": "Each role lists the modules it opens, and where it applies: VS360 Web, the Workspace app, or both.",
+      "vo": "Build roles that match how your agency works, each with exactly the modules it needs.",
+      "target": {
+        "x": 96,
+        "y": 190,
+        "w": 1340,
+        "h": 620
+      },
+      "zoom": 1.05,
+      "from": "staff/roles"
+    },
+    "staff-role-actions": {
+      "module": "access",
+      "title": "Down to each action",
+      "body": "This case manager can view, add and edit cases, but not delete them. Without View all, they see new cases and the ones they handle.",
+      "vo": "Then set every action. This case manager can view, add, and edit cases, but can't delete them, and only sees the cases they work on.",
+      "target": {
+        "x": 266,
+        "y": 300,
+        "w": 906,
+        "h": 480
+      },
+      "zoom": 1.25,
+      "from": "staff/role-cases"
+    },
+    "staff-team": {
+      "module": "access",
+      "title": "Your whole team",
+      "body": "Everyone on staff, with their role and whether they're active.",
+      "vo": "Your staff list shows everyone, with their role and status.",
+      "target": {
+        "x": 96,
+        "y": 190,
+        "w": 1340,
+        "h": 470
+      },
+      "zoom": 1.1,
+      "from": "staff/staff"
+    },
+    "staff-offboard": {
+      "module": "access",
+      "title": "When someone leaves",
+      "body": "Change their role, switch their code to text, or deactivate them in one click.",
+      "vo": "And when someone leaves, deactivate them in one click.",
+      "target": {
+        "x": 1000,
+        "y": 0,
+        "w": 440,
+        "h": 740
+      },
+      "zoom": 1,
+      "from": "staff/edit-user"
+    },
+    "calendar-month": {
+      "module": "calendar",
+      "title": "Your whole month",
+      "body": "Appointments, court dates and hotline callbacks on one calendar, colored by priority.",
+      "vo": "Appointments, court dates, and hotline callbacks, all on one calendar.",
+      "target": {
+        "x": 96,
+        "y": 80,
+        "w": 1340,
+        "h": 800
+      },
+      "zoom": 1,
+      "from": "calendar/month"
+    },
+    "calendar-court": {
+      "module": "calendar",
+      "title": "Reminders for staff and client",
+      "body": "Remind the team and the client before it starts: in the app, by email, or both.",
+      "vo": "Reminders go to the team and to the client, in the app or by email.",
+      "target": {
+        "x": 400,
+        "y": 500,
+        "w": 640,
+        "h": 330
+      },
+      "zoom": 1.5,
+      "from": "calendar/court-notify"
+    },
+    "time-hours": {
+      "module": "calendar",
+      "title": "Hours by funding source",
+      "body": "Hours per grant and per staff member, for any date range, ready for your funders.",
+      "vo": "Then see staff hours by funding source, for any period, ready for your funders.",
+      "target": {
+        "x": 96,
+        "y": 180,
+        "w": 1340,
+        "h": 600
+      },
+      "zoom": 1.1,
+      "from": "calendar/hours"
+    },
+    "notes-list": {
+      "module": "notes",
+      "title": "Every note, one place",
+      "body": "Every case note across your caseload, with today, this week and this month at a glance.",
+      "vo": "Notes Center brings every case note into one place.",
+      "target": {
+        "x": 96,
+        "y": 128,
+        "w": 1330,
+        "h": 84
+      },
+      "zoom": 1.3,
+      "from": "notes/list"
+    },
+    "drive": {
+      "module": "drive",
+      "title": "One drive, every view",
+      "body": "My Drive, Shared with me, Agency Drive and Starred, side by side.",
+      "vo": "NECX Drive gives your team My Drive, Shared with me, Agency Drive, and Starred.",
+      "target": {
+        "x": 125,
+        "y": 155,
+        "w": 225,
+        "h": 225
+      },
+      "zoom": 1.5,
+      "from": "drive/my"
+    },
+    "drive-links": {
+      "module": "drive",
+      "title": "Links that expire",
+      "body": "Share links expire after 1, 7 or 30 days, and you can revoke any link whenever you want.",
+      "vo": "Or create a share link that expires in a day, a week, or a month, and revoke it whenever you want.",
+      "target": {
+        "x": 495,
+        "y": 50,
+        "w": 450,
+        "h": 300
+      },
+      "zoom": 1.5,
+      "from": "drive/link"
+    },
+    "network": {
+      "module": "network",
+      "title": "Your Network",
+      "body": "Agencies on NECX, with the services they offer and whether they're accepting referrals.",
+      "vo": "Network shows the agencies on NECX, with the services they offer, and whether they're accepting referrals.",
+      "target": {
+        "x": 105,
+        "y": 395,
+        "w": 935,
+        "h": 430
+      },
+      "zoom": 1.15,
+      "from": "connect/directory"
+    },
+    "network-chat": {
+      "module": "network",
+      "title": "Chat with partner agencies",
+      "body": "Agency chats are shared by the staff at both agencies, so no one works alone.",
+      "vo": "Chat with partner agencies too. Everyone at both agencies can read and reply.",
+      "target": {
+        "x": 460,
+        "y": 130,
+        "w": 965,
+        "h": 750
+      },
+      "zoom": 1.1,
+      "from": "connect/agency-chat"
+    },
+    "services-catalog": {
+      "module": "services",
+      "title": "Your service catalog",
+      "body": "Every service your agency offers, grouped by category.",
+      "vo": "Start with your catalog: every service your agency offers, grouped by category.",
+      "target": {
+        "x": 96,
+        "y": 150,
+        "w": 1340,
+        "h": 700
+      },
+      "zoom": 1.05,
+      "from": "services/grid"
+    }
+  }
+}

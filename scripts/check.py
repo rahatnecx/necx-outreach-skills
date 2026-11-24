@@ -18,6 +18,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PLAYBOOK = ROOT / "playbook" / "necx-outreach-playbook.md"
 SKILL = ROOT / "plugins" / "necx-outreach" / "skills" / "necx-outreach-planner" / "SKILL.md"
 GPT = ROOT / "chatgpt" / "custom-gpt-setup.md"
+VIDEO_SKILL = ROOT / "plugins" / "necx-outreach" / "skills" / "necx-outreach-video" / "SKILL.md"
+SKIP_DIRS = {"node_modules", "out", ".git", "necx-outreach-videos"}
 PLUGIN = ROOT / "plugins" / "necx-outreach" / ".claude-plugin" / "plugin.json"
 MARKET = ROOT / ".claude-plugin" / "marketplace.json"
 
@@ -106,10 +108,12 @@ def check_versions() -> None:
 
 
 def main() -> int:
-    for p in (PLAYBOOK, SKILL, GPT):
+    for p in (PLAYBOOK, SKILL, VIDEO_SKILL, GPT):
         scan_banned(p)
+    # our own files only: skip installed dependencies and render output
     for p in ROOT.rglob("*.md"):
-        scan_private(p)
+        if not SKIP_DIRS.intersection(p.relative_to(ROOT).parts):
+            scan_private(p)
     check_skill()
     check_gpt()
     check_versions()

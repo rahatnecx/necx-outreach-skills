@@ -1,0 +1,84 @@
+{
+  "width": 1440,
+  "height": 900,
+  "demo": {
+    "agency": "Harbor Light Victim Center",
+    "role": "Case Manager",
+    "initials": "ML",
+    "firstName": "Maria"
+  },
+  "agency": {
+    "box": {
+      "x": 1078.3,
+      "y": 22.6,
+      "w": 161.5,
+      "h": 17
+    },
+    "style": {
+      "fontSize": 12,
+      "fontWeight": 600,
+      "letterSpacing": 0,
+      "textTransform": "none",
+      "color": "rgb(255, 255, 255)",
+      "fontFamily": "Poppins, sans-serif"
+    },
+    "text": "Harbor Light Victim Center"
+  },
+  "role": {
+    "box": {
+      "x": 1263.5,
+      "y": 22.6,
+      "w": 94.5,
+      "h": 17
+    },
+    "style": {
+      "fontSize": 12,
+      "fontWeight": 600,
+      "letterSpacing": 0,
+      "textTransform": "none",
+      "color": "rgb(255, 255, 255)",
+      "fontFamily": "Poppins, sans-serif"
+    },
+    "text": "CASE MANAGER"
+  },
+  "initials": {
+    "box": {
+      "x": 1378,
+      "y": 15.6,
+      "w": 36,
+      "h": 32
+    },
+    "style": {
+      "fontSize": 22.4,
+      "fontWeight": 700,
+      "letterSpacing": 0,
+      "textTransform": "none",
+      "color": "rgb(255, 255, 255)",
+      "fontFamily": "Poppins, sans-serif"
+    },
+    "text": "M L"
+  },
+  "greeting": {
+    "box": {
+      "x": 163,
+      "y": 102.8,
+      "w": 276.9,
+      "h": 33
+    },
+    "style": {
+      "fontSize": 24,
+      "fontWeight": 700,
+      "letterSpacing": 0,
+      "textTransform": "none",
+      "color": "rgb(0, 43, 91)",
+      "fontFamily": "Poppins, sans-serif"
+    },
+    "text": "Good afternoon, Maria"
+  },
+  "headerGroup": {
+    "x": 1078,
+    "y": 24,
+    "w": 280,
+    "h": 17
+  }
+}

@@ -9,7 +9,29 @@ What the prospect sees:
 - **Sound and captions:** voiceover, burned-in captions, and a music bed ducked under the voice.
 - **A reply CTA** with the sender's name and email.
 
-## Render
+## Connectors (how Claude renders)
+
+| | Started by | Runs on | Output |
+|---|---|---|---|
+| `server/local.mjs` | the plugin's `.mcp.json`, automatically (Claude Code, Desktop, Cowork) | the user's computer | files in `~/NECX Outreach Videos/<videoId>/` (or the folder set in plugin settings) |
+| `server/server.mjs` | you, on a host (`Dockerfile`) | a NECX server | hosted watch page + MP4/thumbnail/GIF links (for claude.ai on the web) |
+
+Both expose `list_screens`, `preview_plan`, `render_videos` and `get_render_status`. The local one adds `setup_voice` (a localhost page for the ElevenLabs key) and `open_videos_folder`.
+
+**Local connector details:**
+- `server/start.sh` finds Node 18+ even without a shell PATH, or downloads one to `~/.necx-outreach/node`.
+- `local.mjs` has no npm dependencies, so it answers immediately and runs `npm install` in the background on first use. Jobs persist in `~/.necx-outreach/jobs`.
+
+**Hosted connector:**
+```bash
+docker build -t necx-video .
+docker run -d -p 8080:8080 -v necx-video-data:/data \
+  -e PUBLIC_URL=https://video.example.org -e ACCESS_TOKENS=$(openssl rand -hex 24) \
+  -e ELEVENLABS_API_KEY=... necx-video
+```
+Put HTTPS in front (Caddy or nginx), then add `https://video.example.org/mcp/<token>` in claude.ai → Settings → Connectors → Add custom connector.
+
+## Render from the command line
 
 ```bash
 node scripts/render.mjs plan.json --dry-run        # validate, print each video's script and length

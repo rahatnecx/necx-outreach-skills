@@ -1,6 +1,6 @@
 {
   "name": "necx-outreach",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Plan NECX multi-thread outreach to victim-services organizations (research, contact ranking, To/CC/BCC, emails) and render personalized faceless videos on real VS360 screens that show the prospect's agency and name.",
   "author": {
     "name": "NECX Inc.",
@@ -45,6 +45,12 @@
       "type": "string",
       "title": "Your NECX email",
       "description": "Shown on the call to action, e.g. jordan@necx.org.",
+      "default": ""
+    },
+    "videos_folder": {
+      "type": "string",
+      "title": "Videos folder (optional)",
+      "description": "Where rendered videos are saved on this computer. Empty = ~/NECX Outreach Videos.",
       "default": ""
     }
   }

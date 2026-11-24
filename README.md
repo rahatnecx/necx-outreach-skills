@@ -42,14 +42,15 @@ Update later with `/plugin marketplace update necx-outreach`.
 
 Then ask: *"Plan outreach for naplesshelter.org"* and attach the employee list.
 
-### Personalized videos (Claude Code)
-After a plan, ask *"Render the videos"*. The `necx-outreach-video` skill turns each contact's video plan into:
-- an MP4 with real VS360 screens showing **their agency, title and initials** and greeting them by first name
-- an email thumbnail with a play button
-- a GIF preview
-- a review script
+### Personalized videos
+Ask *"Render the videos"* after a plan. Every contact gets their own video: real VS360 screens showing **their agency, title and initials**, a first-name greeting, voiceover and captions, plus an email thumbnail and GIF.
 
-The first run installs the video dependencies, which takes about a minute. Set `ELEVENLABS_API_KEY` for the production voice; without it, the macOS voice is used for review. See `plugins/necx-outreach/video/README.md`.
+| Where | How it renders |
+|---|---|
+| Claude Code, Claude Desktop, Cowork | **Automatically on your computer.** The plugin starts the NECX Video connector locally, and videos land in *~/NECX Outreach Videos*. The first render installs the video tools (about a minute). |
+| claude.ai in a web browser | Needs the hosted NECX Video connector (`plugins/necx-outreach/video/server/server.mjs`, Dockerfile included) added under Settings → Connectors. Until then, web chat writes the scripts, and you render them in Desktop or Cowork. |
+
+**Voice:** enter your ElevenLabs key when the plugin asks. If it didn't ask, Claude opens a private page in your browser for it (`setup_voice`). Without a key, videos use the macOS voice, which is for review only. See `plugins/necx-outreach/video/README.md`.
 
 ### ChatGPT
 Follow `chatgpt/custom-gpt-setup.md`: paste the Instructions block and upload `playbook/necx-outreach-playbook.md` as Knowledge. ChatGPT can't pull from GitHub, so the GPT owner re-uploads both after every release.

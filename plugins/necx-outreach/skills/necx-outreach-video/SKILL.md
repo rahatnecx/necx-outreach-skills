@@ -14,21 +14,26 @@ Writes and renders **a different video for every contact**. Two people at the sa
 
 ## Pick the render path (check in this order)
 
-1. **NECX Video connector.** Use it whenever the tools `preview_plan`, `render_videos`, `get_render_status` and `list_screens` are available. This works in claude.ai on the web, Claude Desktop, Cowork and Claude Code alike.
-   - Rendering happens on the NECX server, and the ElevenLabs key lives there. **Never ask the user for a key on this path.**
-   - Steps:
-     1. `list_screens` (if you need the catalog).
-     2. Write the plan.
-     3. `preview_plan`, and show the user each script.
-     4. `render_videos`.
-     5. Call `get_render_status` about once a minute until done. Tell the user it's rendering, about 2 minutes per video.
-     6. Give the links.
-2. **Local renderer.** In Claude Code with this plugin installed (the folder `${CLAUDE_PLUGIN_ROOT}/video` exists and `node` runs), follow *Steps (local render)* below.
-3. **Neither.** Write the plan JSON and save it as a file. Tell the user the videos render once the **NECX Video** connector is added (claude.ai / Desktop: Settings → Connectors → Add custom connector, using the URL from the NECX admin), or in Claude Code with the plugin.
+1. **NECX Video connector.** Use it whenever the tools `preview_plan`, `render_videos`, `get_render_status` and `list_screens` are available. Steps:
+   1. `list_screens` (if you need the catalog).
+   2. Write the plan.
+   3. `preview_plan`, and show the user each script.
+   4. `render_videos`.
+   5. Call `get_render_status` about once a minute until done. Tell the user it's rendering, about 2 minutes per video.
+   6. Give the results.
 
-**Delivering videos from the connector:** for each person, give the watch-page link plus an email-ready snippet: `<a href="WATCH_URL"><img src="GIF_URL" alt="A short video for FIRST" width="480"></a>`. Use the thumbnail URL instead of the GIF if their mail client blocks animation.
-
-Watch pages are unguessable, unlisted and not indexed. Still, they show the prospect's name and agency, so share them only in that person's email.
+   The connector comes in two forms, and the tools tell you which one you have:
+   - **Local** (has `setup_voice` and `open_videos_folder`): the plugin starts it automatically on the user's computer in Claude Code, Claude Desktop and Cowork.
+     - Videos are saved in the user's *NECX Outreach Videos* folder. Status shows file paths, plus an `index.html` preview page per video.
+     - The first render also installs the video tools, which takes about a minute.
+     - If `preview_plan` says there's no ElevenLabs key or credits are short, call `setup_voice`. It opens a private page in their browser where they enter the key. **Never ask for the key in the chat.** Wait until they say it's saved, then render.
+     - When done, offer `open_videos_folder`. To send, they upload the MP4 to their usual video host (Drive, Vimeo, Loom), then link it from the email with the thumbnail or GIF image.
+   - **Hosted** (no `setup_voice`; links start with https): the NECX server renders, and the key lives there. Each video comes back with a ready-to-send watch page. Give the email snippet `<a href="WATCH_URL"><img src="GIF_URL" alt="A short video for FIRST" width="480"></a>`, with the thumbnail URL instead of the GIF if the recipient's mail client blocks animation.
+     - Watch pages are unguessable and not indexed, but they show the prospect's name and agency. Share each one only in that person's email.
+2. **Local renderer by command.** In Claude Code, if the connector tools are missing but `${CLAUDE_PLUGIN_ROOT}/video` exists and `node` runs, follow *Steps (local render)* below.
+3. **Neither** (for example claude.ai in a web browser without the hosted connector). Write the plan JSON and save it as a file. Tell the user:
+   - It renders automatically in Claude Desktop, Cowork or Claude Code with the necx-outreach plugin installed. Opening the same conversation's plan there is enough.
+   - In the web browser it renders once a NECX admin hosts the connector and they add it under Settings → Connectors.
 
 ## Where things are
 

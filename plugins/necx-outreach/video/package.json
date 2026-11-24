@@ -1,7 +1,7 @@
 {
   "name": "necx-outreach-video",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Personalized faceless outreach videos for NECX prospects, built from real VS360 screens with Remotion",
   "scripts": {
     "studio": "remotion studio src/index.js",
@@ -21,7 +21,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "4.0.535",
-    "zod": "^3.25.76"
+    "zod": "4.5.4"
   },
   "devDependencies": {
     "flag-icons": "^7.6.0",

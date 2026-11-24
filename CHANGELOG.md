@@ -3,6 +3,15 @@
 All notable changes to the playbook, skill and GPT instructions.
 Format: date · version · change · source.
 
+## v1.2.0 — 2026-11-24
+- NECX Video connector, local: the plugin starts a video renderer on the user's own computer automatically (`.mcp.json` → `video/server/start.sh` → `video/server/local.mjs`). It works in Claude Code, Claude Desktop and Cowork; Cowork's own code sandbox can't render, but plugin connectors run on the user's machine.
+  - Tools: list_screens, preview_plan, render_videos, get_render_status, setup_voice, open_videos_folder.
+  - No npm dependencies to start. It finds Node 18+ (nvm, Homebrew, Volta, fnm, system) or downloads a private copy, installs the video tools in the background on first use, and saves videos to *~/NECX Outreach Videos* (configurable).
+  - `setup_voice` opens a private localhost page to enter the ElevenLabs key, so the key never passes through the chat. The plugin settings key is passed to the connector directly.
+- NECX Video connector, hosted (`video/server/server.mjs` + `Dockerfile`): the same tools over HTTP for claude.ai in a web browser, with unguessable watch pages, MP4, thumbnail and GIF links. Not deployed yet; it needs a host.
+- `video/scripts/pipeline.mjs`: one shared validate/voice/render pipeline for the command line and both connectors.
+- The video skill picks the connector, then the local command, then plan-only. The release ships `necx-outreach-video.zip` alongside the planner zip.
+
 ## v1.1.0 — 2026-11-24
 - New skill `necx-outreach-video`: renders one personalized, faceless video per contact (MP4 1920×1080, email thumbnail with play button, 3 s GIF preview, review script) from the planner's plan JSON. Lives in `plugins/necx-outreach/video/` (Remotion).
 - Real VS360 screens: 68 screens captured from vs360-webapp with fictional client data, with verified on-screen copy, taken from the necx-advertisement-video captures. On every screen the app header shows the prospect's agency, title and initials, and the dashboard greets them by first name. Header positions and text styles were measured from the real vs360-webapp layout (`video/capture/plan-slots.mjs`).

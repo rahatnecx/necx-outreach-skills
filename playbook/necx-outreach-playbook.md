@@ -286,6 +286,15 @@ Personalization is built in. On every VS360 screen the app header shows **the pr
 
 ---
 
+### 8.6 Emails, sequences and output (necx-outreach-video skill)
+- **Per contact:** a role-based sequence: video email → bump → new-angle text → break-up (A/B); routing note (G); warm-only text (D/E); last-wave executive video (F).
+- **Per agency:** one agency-wide video ("for the team at <Org>", all modules filtered by its programs and funders) with its own email.
+- **Video emails:** put a `[VIDEO]` line where the linked thumbnail goes. HTML gets the thumbnail image linked to the video plus a text link; plain text gets "Watch the video: <link>". No players, iframes, GIF-only images or attachments.
+- **Humanizer pass on every email.** The tools reject AI-stock words, dashes, exclamation marks, emoji, links in the body and over-length copy.
+- **Output folder:** `<Agency>/outreach.json`, `outreach.md`, `sequence.csv`, `HOW-TO-SEND.md`, `00. Agency video (whole team)/`, and `NN. Person (Title)/` with the video, thumbnail and `email-NN-*.html/.txt`.
+
+---
+
 ## 9. QA checklist (run before output)
 
 - [ ] Every org fact has a URL + date; prior-email facts tagged "re-verify."

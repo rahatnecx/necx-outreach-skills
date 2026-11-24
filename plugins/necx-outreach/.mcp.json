@@ -2,11 +2,16 @@
   "mcpServers": {
     "necx-video": {
       "command": "/bin/sh",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/video/server/start.sh"],
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/video/server/start.sh"
+      ],
       "env": {
         "ELEVENLABS_API_KEY": "${user_config.elevenlabs_api_key}",
         "ELEVENLABS_VOICE": "${user_config.elevenlabs_voice_id}",
-        "NECX_VIDEO_OUT": "${user_config.videos_folder}"
+        "NECX_VIDEO_OUT": "${user_config.videos_folder}",
+        "NECX_SENDER_NAME": "${user_config.sender_name}",
+        "NECX_SENDER_TITLE": "${user_config.sender_title}",
+        "NECX_SENDER_EMAIL": "${user_config.sender_email}"
       }
     }
   }

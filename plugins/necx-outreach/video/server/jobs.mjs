@@ -6,6 +6,7 @@ import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import * as P from "../scripts/pipeline.mjs";
+import { folderName, writeOutreach } from "../scripts/outreach.mjs";
 
 export { P };
 
@@ -64,20 +65,41 @@ export async function voiceLine(voice, videos, { setupHint }) {
   return `Voice: ElevenLabs (${need.toLocaleString()} characters needed${c ? `, ${c.left.toLocaleString()} left` : ""}).`;
 }
 
+// ---- outreach files (emails, schedule, CSV) for one agency -------------------------
+// links.json in the agency folder holds hosting links added later (set_video_link).
+export function saveOutreach(o, baseDir, { localFiles = true, hosted = null, voice = null } = {}) {
+  const orgDir = path.join(baseDir, o.org.folder);
+  mkdirSync(orgDir, { recursive: true });
+  const linksFile = path.join(orgDir, "links.json");
+  const saved = existsSync(linksFile) ? JSON.parse(readFileSync(linksFile, "utf8")) : {};
+  const byId = new Map(o.videos.map((v) => [v.videoId, v]));
+  const linksFor = (videoId) => {
+    const v = byId.get(videoId);
+    const local = localFiles && v ? { videoFile: path.join(baseDir, v.folder, "video.mp4") } : {};
+    const seconds = v?.scenes?.every((s) => !s.vo || s.audio) ? P.lengthSeconds(v) : v ? P.lengthSeconds(v) : undefined;
+    return { seconds, ...local, ...(hosted?.(videoId) ?? {}), ...(saved[videoId] ?? {}) };
+  };
+  const r = writeOutreach(o, baseDir, { linksFor, renderVoice: voice });
+  return { ...r, linksFor };
+}
+
 // A sequential render queue persisted in <jobsDir>.
-//   slugFor(video)      folder name for a video
-//   videoDir(slug)      where its files go
-//   linksFor(slug)      { watch, mp4, thumbnail, gif } shown to the user
+//   baseDir             agencies' folders go here: <baseDir>/<Agency>/<NN. Person (Title)>/
+//   slugFor(video)      a video's folder, relative to baseDir (local: <Agency>/<Person>)
+//   hosted(videoId)     hosted links for a video (hosted server), else null
 //   voice()             current { provider, key, voiceId } (can change mid-session)
 //   fallback()          voice to use if ElevenLabs can't finish
 //   ready()             resolves when Remotion is installed
-export function createRunner({ jobsDir, slugFor, videoDir, linksFor, voice, fallback, ready = async () => {}, log = console.error }) {
+export function createRunner({ jobsDir, baseDir, slugFor, hosted = null, localFiles = true, voice, fallback, ready = async () => {}, log = console.error }) {
   mkdirSync(jobsDir, { recursive: true });
   const file = (id) => path.join(jobsDir, `${id}.json`);
   const load = (id) => (/^[a-f0-9]{16}$/.test(id) && existsSync(file(id)) ? JSON.parse(readFileSync(file(id), "utf8")) : null);
   const save = (job) => writeFileSync(file(job.id), JSON.stringify(job, null, 2));
   const queue = [];
   let busy = false;
+  const hostedFor = (job) => (hosted ? (videoId) => job.videos.find((x) => x.videoId === videoId)?.links : null);
+  const outreachBase = (job) => (hosted ? path.join(baseDir, "outreach", job.id) : baseDir);
+  const resave = (job, outreach, voiceUsed) => saveOutreach(outreach, outreachBase(job), { localFiles, hosted: hostedFor(job), voice: voiceUsed });
 
   async function work() {
     if (busy) return;
@@ -85,24 +107,23 @@ export function createRunner({ jobsDir, slugFor, videoDir, linksFor, voice, fall
     while (queue.length) {
       const job = load(queue.shift());
       if (!job) continue;
+      const { outreach } = P.validatePlan(job.plan, { requireVideos: false });
       try {
-        if (job.status === "queued") {
-          job.status = "preparing";
-          save(job);
-        }
+        job.status = "preparing";
+        save(job);
         await ready();
         job.status = "voicing";
         save(job);
-        const videos = job.videos.map((x) => x.props);
+        const videos = outreach.videos;
         await P.stageImages(videos);
         job.voice = await P.voiceVideos(videos, voice(), { fallback: fallback(), log: (m) => (job.note = m) });
         job.status = "rendering";
         save(job);
-        for (const [i, item] of job.videos.entries()) {
+        for (const item of job.videos) {
+          const props = videos.find((v) => v.videoId === item.videoId);
           item.status = "rendering";
           save(job);
-          const dir = videoDir(item.slug);
-          const props = videos[i];
+          const dir = path.join(baseDir, hosted ? "videos" : "", item.slug);
           let last = 0;
           await P.renderVideo(props, dir, {
             provider: job.voice,
@@ -115,13 +136,15 @@ export function createRunner({ jobsDir, slugFor, videoDir, linksFor, voice, fall
               }
             },
           });
-          const meta = { recipient: props.recipient, sender: props.sender ?? {}, videoId: props.videoId, created: new Date().toISOString() };
+          const meta = { recipient: props.recipient, sender: props.sender ?? {}, videoId: props.videoId, kind: props.kind, created: new Date().toISOString() };
           writeFileSync(path.join(dir, "meta.json"), JSON.stringify(meta));
           writeFileSync(path.join(dir, "index.html"), watchHtml(meta));
+          item.seconds = P.lengthSeconds(props);
           item.status = "done";
           item.progress = 100;
           save(job);
         }
+        resave(job, outreach, job.voice); // now with real lengths and the voice used
         job.status = "done";
       } catch (e) {
         job.status = "failed";
@@ -135,11 +158,10 @@ export function createRunner({ jobsDir, slugFor, videoDir, linksFor, voice, fall
     busy = false;
   }
 
-  // resume jobs interrupted by a restart
   for (const f of readdirSync(jobsDir)) {
     try {
       const job = JSON.parse(readFileSync(path.join(jobsDir, f), "utf8"));
-      if (!["done", "failed"].includes(job.status)) queue.push(job.id);
+      if (!["done", "failed"].includes(job.status) && job.plan) queue.push(job.id);
     } catch {}
   }
   setTimeout(work, 0);
@@ -152,47 +174,106 @@ export function createRunner({ jobsDir, slugFor, videoDir, linksFor, voice, fall
       return queue.length;
     },
     async preview(plan, setupHint = "") {
-      const { videos, problems, warnings } = P.validatePlan(plan);
+      const { outreach, videos, problems, warnings } = P.validatePlan(plan, { requireVideos: false });
+      const emails = outreach.contacts.reduce((n, c) => n + (c.emails?.length ?? 0), 0) + (outreach.agency?.emails?.length ?? 0);
       return [
-        problems.length ? `PROBLEMS (fix before rendering):\n- ${problems.join("\n- ")}` : "No blocking problems.",
+        problems.length ? `PROBLEMS (fix before saving or rendering):\n- ${problems.join("\n- ")}` : "No blocking problems.",
         warnings.length ? `Warnings:\n- ${warnings.join("\n- ")}` : "",
-        await voiceLine(voice(), videos, { setupHint }),
+        `${outreach.org.name || "(no agency name)"}: ${outreach.contacts.length} contact(s), ${emails} email(s), ${videos.length} video(s)${outreach.agency ? " incl. the agency-wide video" : ""}.`,
+        videos.length ? await voiceLine(voice(), videos, { setupHint }) : "",
         ...videos.map((v) => P.scriptMarkdown(v, voice().provider)),
       ].filter(Boolean).join("\n\n");
     },
+    // emails/schedule/CSV only, no rendering
+    saveOnly(plan) {
+      const { outreach, problems } = P.validatePlan(plan, { requireVideos: false });
+      if (problems.length) return { error: `Not saved. Fix these first:\n- ${problems.join("\n- ")}` };
+      if (hosted) return { error: "This server saves outreach files as part of render_videos." };
+      const r = saveOutreach(outreach, baseDir, { localFiles });
+      return { text: `Saved ${r.emails} email(s) for ${outreach.org.name} in ${r.orgDir}\n(outreach.md, outreach.json, sequence.csv, HOW-TO-SEND.md, and one folder per person)` };
+    },
     submit(plan) {
-      const { videos, problems } = P.validatePlan(plan);
+      const { outreach, videos, problems } = P.validatePlan(plan, { requireVideos: false });
       if (problems.length) return { error: `Not rendered. Fix these first:\n- ${problems.join("\n- ")}` };
       const id = randomBytes(8).toString("hex");
       const job = {
         id,
         created: new Date().toISOString(),
         status: "queued",
+        org: outreach.org.name,
+        plan,
         videos: videos.map((v) => {
           const slug = slugFor(v);
-          return { videoId: v.videoId, slug, status: "queued", progress: 0, seconds: P.lengthSeconds(v), links: linksFor(slug), props: v };
+          return { videoId: v.videoId, who: v.kind === "agency" ? `${outreach.org.name} (agency-wide)` : `${v.recipient.firstName} ${v.recipient.lastName ?? ""}`.trim(), slug, status: "queued", progress: 0, seconds: P.lengthSeconds(v), links: hosted ? hosted(slug) : null };
         }),
       };
       save(job);
-      queue.push(id);
-      setTimeout(work, 0);
+      const saved = resave(job, outreach, null); // emails exist before the videos do
+      if (videos.length) {
+        queue.push(id);
+        setTimeout(work, 0);
+      } else {
+        job.status = "done";
+        save(job);
+      }
       const ahead = queue.length - 1;
       return {
         job,
         text: [
-          `Queued job ${id} (${videos.length} video${videos.length > 1 ? "s" : ""}${ahead > 0 ? `, ${ahead} job(s) ahead` : ""}). About ${Math.ceil(videos.length * 2)} min. Check with get_render_status.`,
-          "",
-          ...job.videos.map((x) => `- ${x.videoId} (${x.seconds} s): ${x.links.watch}`),
+          `Saved the outreach for ${outreach.org.name}: ${saved.emails} email(s)${hosted ? "" : ` in ${saved.orgDir}`}.`,
+          videos.length ? `Queued job ${id}: ${videos.length} video${videos.length > 1 ? "s" : ""}${ahead > 0 ? ` (${ahead} job(s) ahead)` : ""}, about ${Math.ceil(videos.length * 2)} min. Check with get_render_status.` : "No videos in this plan.",
+          ...job.videos.map((x) => `- ${x.who} (${x.seconds} s)`),
         ].join("\n"),
       };
     },
     status(id, extra = "") {
       const job = load(id);
       if (!job) return null;
+      const where = (x) => (hosted ? `\n  watch: ${x.links.watch}\n  mp4: ${x.links.mp4}\n  thumbnail: ${x.links.thumbnail}\n  gif: ${x.links.gif}` : `\n  folder: ${path.join(baseDir, x.slug)}`);
       return [
-        `Job ${job.id}: ${job.status}${job.voice ? ` · voice: ${job.voice}` : ""}${job.error ? ` · error: ${job.error}` : ""}${job.note ? `\nNote: ${job.note}` : ""}${extra ? `\n${extra}` : ""}`,
-        ...job.videos.map((x) => `- ${x.videoId}: ${x.status}${x.status === "rendering" ? ` ${x.progress}%` : ""}${x.status === "done" ? `\n  watch: ${x.links.watch}\n  mp4: ${x.links.mp4}\n  thumbnail: ${x.links.thumbnail}\n  gif: ${x.links.gif}` : ""}`),
-      ].join("\n");
+        `Job ${job.id} (${job.org ?? ""}): ${job.status}${job.voice ? ` · voice: ${job.voice}` : ""}${job.error ? ` · error: ${job.error}` : ""}${job.note ? `\nNote: ${job.note}` : ""}${extra ? `\n${extra}` : ""}`,
+        ...job.videos.map((x) => `- ${x.who}: ${x.status}${x.status === "rendering" ? ` ${x.progress}%` : ""}${x.status === "done" ? where(x) : ""}`),
+        job.status === "done" && !hosted ? `\nEmails, schedule and CSV: ${path.join(baseDir, folderName(job.org ?? ""))}` : "",
+      ].filter(Boolean).join("\n");
     },
+    // the outreach package of a hosted job, for clients that can't read the server's disk
+    outreachFile(id, kind) {
+      const job = load(id);
+      if (!job) return null;
+      const dir = path.join(outreachBase(job), folderName(job.org ?? ""));
+      const f = { markdown: "outreach.md", csv: "sequence.csv", json: "outreach.json" }[kind] ?? "outreach.md";
+      return existsSync(path.join(dir, f)) ? readFileSync(path.join(dir, f), "utf8") : null;
+    },
+  };
+}
+
+// hosting links added after rendering: rewrite that agency's emails and CSV
+export function setVideoLink(baseDir, { org, person, videoUrl, thumbnailUrl }) {
+  const orgDir = path.join(baseDir, folderName(org));
+  const jf = path.join(orgDir, "outreach.json");
+  if (!existsSync(jf)) return { error: `No saved outreach for "${org}" in ${baseDir}.` };
+  if (!/^https:\/\//.test(videoUrl ?? "")) return { error: "videoUrl must be an https:// link people can open." };
+  if (thumbnailUrl && !/^https:\/\//.test(thumbnailUrl)) return { error: "thumbnailUrl must be an https:// image link." };
+  const saved = JSON.parse(readFileSync(jf, "utf8"));
+  const q = String(person ?? "").toLowerCase();
+  const people = [...(saved.agency ? [{ ...saved.agency, name: "agency" }] : []), ...saved.contacts];
+  const hit = people.find((c) => c.video && (c.video.videoId === person || (q && (c.name ?? "").toLowerCase().includes(q)) || (q === "agency" && c.video.kind === "agency")));
+  if (!hit) return { error: `No video for "${person}" in ${org}. People with videos: ${people.filter((c) => c.video).map((c) => c.name).join(", ")}` };
+  const lf = path.join(orgDir, "links.json");
+  const links = existsSync(lf) ? JSON.parse(readFileSync(lf, "utf8")) : {};
+  links[hit.video.videoId] = { videoUrl, ...(thumbnailUrl ? { thumbnailUrl } : {}) };
+  writeFileSync(lf, JSON.stringify(links, null, 2));
+  const { outreach } = P.validatePlan(saved.plan ?? planFromSaved(saved), { requireVideos: false });
+  const r = saveOutreach(outreach, baseDir, { voice: saved.voice });
+  return { text: `Linked ${hit.name}'s video. Rewrote ${r.emails} email(s) and sequence.csv in ${r.orgDir}.${thumbnailUrl ? "" : "\nThe thumbnail is still the local file: host it too (thumbnailUrl) so the image shows when pasted, or insert thumbnail.jpg inline (see HOW-TO-SEND.md)."}` };
+}
+
+// outreach.json holds the normalized plan; rebuild the input shape from it
+function planFromSaved(o) {
+  return {
+    sender: o.sender,
+    org: o.org,
+    agencyVideo: o.agency ? { enabled: true, videoId: o.agency.video?.videoId, scenes: o.agency.video?.scenes, emails: o.agency.emails } : undefined,
+    contacts: o.contacts.map(({ name, folder, video, videoBlocked, ...c }) => ({ ...c, video: video ? { videoId: video.videoId, scenes: video.scenes, voice: video.voice, music: video.music, captions: video.captions, personalizeScreens: video.personalizeScreens } : null })),
   };
 }

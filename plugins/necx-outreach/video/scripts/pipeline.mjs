@@ -12,21 +12,26 @@ export const RUN = path.join(HERE, "public/run");
 export const CATALOG = JSON.parse(readFileSync(path.join(HERE, "public/screens/catalog.json"), "utf8")).screens;
 export const TYPES = ["title", "problem", "website", "screen", "checklist", "stat", "cta"];
 const { plan: timeline } = await import(pathToFileURL(path.join(HERE, "src/timeline.js")).href);
+const { normalizeOutreach, lintOutreach } = await import(pathToFileURL(path.join(HERE, "scripts/outreach.mjs")).href);
 
 // ---- plan ----------------------------------------------------------------------
 
-// raw plan → { videos (sender/defaults merged), problems (block rendering), warnings }
-export function validatePlan(raw, { only = null } = {}) {
-  const PLAN = Array.isArray(raw) ? { videos: raw } : raw?.videos ? raw : { videos: raw ? [raw] : [] };
+// raw plan → { outreach (agency, contacts, emails, videos), videos, problems (block), warnings }
+export function validatePlan(raw, { only = null, requireVideos = true } = {}) {
+  const asPlan = Array.isArray(raw) ? { videos: raw } : raw?.videos || raw?.contacts ? raw : { videos: raw ? [raw] : [] };
+  const outreach = normalizeOutreach(structuredClone(asPlan));
   const problems = [];
   const warnings = [];
-  const videos = (PLAN.videos ?? [])
+  const lint = lintOutreach(outreach);
+  problems.push(...lint.problems);
+  warnings.push(...lint.warnings);
+  const videos = outreach.videos
     .filter((v) => !only || v.videoId === only)
     .map((v) => {
-      const video = structuredClone({ sender: PLAN.sender, ...PLAN.defaults, ...v, recipient: { ...v.recipient } });
+      const video = v;
       const where = video.videoId ?? "(no videoId)";
       if (!video.videoId || !/^[a-z0-9][a-z0-9-]{1,80}$/.test(video.videoId)) problems.push(`${where}: videoId must be lowercase letters, digits and dashes`);
-      if (!video.recipient?.firstName) problems.push(`${where}: recipient.firstName is required`);
+      if (!video.recipient?.firstName && video.kind !== "agency") problems.push(`${where}: recipient.firstName is required`);
       if (!video.recipient?.org) problems.push(`${where}: recipient.org is required`);
       if (/^g$/i.test(video.persona ?? "")) problems.push(`${where}: gatekeepers (persona G) get no video`);
       if (!video.scenes?.length) problems.push(`${where}: no scenes`);
@@ -40,7 +45,7 @@ export function validatePlan(raw, { only = null } = {}) {
       }
       return video;
     });
-  if (!videos.length) problems.push(only ? `no video with videoId "${only}"` : "the plan has no videos");
+  if (!videos.length && (requireVideos || only)) problems.push(only ? `no video with videoId "${only}"` : "the plan has no videos");
 
   // every contact gets their own script, written for their role and org
   const norm = (t) => (t ?? "").toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
@@ -49,7 +54,7 @@ export function validatePlan(raw, { only = null } = {}) {
     const r = v.recipient ?? {};
     const title = v.scenes?.find((s) => s.type === "title");
     if (!title) problems.push(`${where}: start with a title scene`);
-    else if (r.firstName && !(title.vo ?? "").includes(r.firstName)) problems.push(`${where}: the title voiceover must say ${r.firstName}'s name`);
+    else if (v.kind === "agency" ? !(title.vo ?? "").includes(r.org) : r.firstName && !(title.vo ?? "").includes(r.firstName)) problems.push(`${where}: the title voiceover must say ${v.kind === "agency" ? r.org : `${r.firstName}'s name`}`);
     const all = (v.scenes ?? []).map((s) => [s.vo, s.topic, s.headline, s.question, ...(s.lines ?? []), ...(s.items ?? [])].join(" ")).join(" ");
     const orgWords = (r.org ?? "").split(/\s+/).filter((w) => w.length > 3 && !/^(the|and|for|inc|center|centre|services|shelter|family)$/i.test(w));
     if (r.org && !all.includes(r.org) && !orgWords.some((w) => all.includes(w))) warnings.push(`${where}: the script never names ${r.org}; mention the agency at least once`);
@@ -59,9 +64,10 @@ export function validatePlan(raw, { only = null } = {}) {
   }
   const screens = (v) => (v.scenes ?? []).filter((s) => s.type === "screen").map((s) => s.screen).join(",");
   const lines = (v) => new Set((v.scenes ?? []).filter((s) => s.type !== "cta" && s.vo).map((s) => norm(s.vo)));
-  for (let i = 0; i < videos.length; i++) {
-    for (let j = i + 1; j < videos.length; j++) {
-      const [a, b] = [videos[i], videos[j]];
+  const people = videos.filter((v) => v.kind !== "agency"); // the agency video covers everything by design
+  for (let i = 0; i < people.length; i++) {
+    for (let j = i + 1; j < people.length; j++) {
+      const [a, b] = [people[i], people[j]];
       if (screens(a) && screens(a) === screens(b)) problems.push(`${a.videoId} and ${b.videoId} show the same screens in the same order; pick screens for each person's role`);
       const la = lines(a);
       const shared = [...lines(b)].filter((l) => la.has(l));
@@ -69,7 +75,7 @@ export function validatePlan(raw, { only = null } = {}) {
       else if (shared.length === 1) warnings.push(`${a.videoId} and ${b.videoId} share a voiceover line: "${shared[0].slice(0, 70)}…"`);
     }
   }
-  return { videos, problems, warnings };
+  return { outreach, videos, problems, warnings };
 }
 
 // ---- voice ---------------------------------------------------------------------
@@ -91,9 +97,10 @@ export const hasSay = process.platform === "darwin" && spawnSync("which", ["say"
 const lineId = (text, voice, provider, defaultVoice) =>
   createHash("sha1").update(`${provider}|${provider === "elevenlabs" ? voice?.voiceId || defaultVoice || "" : voice?.voiceId ?? ""}|${voice?.speed ?? 1}|${spoken(text)}`).digest("hex").slice(0, 14);
 
-const REMOTION_BIN = path.join(HERE, "node_modules/.bin", process.platform === "win32" ? "remotion.cmd" : "remotion");
+// run Remotion's CLI with this same Node, so it works without node on PATH
+const REMOTION_CLI = path.join(HERE, "node_modules/@remotion/cli/remotion-cli.js");
 function seconds(file) {
-  const out = execFileSync(REMOTION_BIN, ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", file], { encoding: "utf8" });
+  const out = execFileSync(process.execPath, [REMOTION_CLI, "ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", file], { encoding: "utf8" });
   return +parseFloat(out.trim()).toFixed(3);
 }
 
@@ -207,12 +214,12 @@ export function scriptMarkdown(v, provider) {
   const at = new Map(cues.map((c) => [c.scene, c.cue]));
   const r = v.recipient;
   const rows = v.scenes.map((s, i) => {
-    const what = s.type === "screen" ? `${s.screen}: ${s.title ?? CATALOG[s.screen]?.title}` : s.type === "title" ? `For ${r.firstName} · ${s.topic ?? ""}` : s.headline ?? s.value ?? s.question ?? s.type;
+    const what = s.type === "screen" ? `${s.screen}: ${s.title ?? CATALOG[s.screen]?.title}` : s.type === "title" ? `For ${v.kind === "agency" ? `the team at ${r.org}` : r.firstName} · ${s.topic ?? ""}` : s.headline ?? s.value ?? s.question ?? s.type;
     const t = at.has(s) ? (at.get(s) / 30).toFixed(1) + "s" : "";
     return `| ${i + 1} | ${t} | ${s.type} | ${String(what).replace(/\|/g, "/")} | ${(s.vo ?? "").replace(/\|/g, "/")} |`;
   });
   return [
-    `# ${v.videoId}: ${r.firstName} ${r.lastName ?? ""}, ${r.title ?? ""} · ${r.org}`.replace(/\s+/g, " ").trim(),
+    (v.kind === "agency" ? `# ${v.videoId}: the whole team at ${r.org} (agency-wide)` : `# ${v.videoId}: ${r.firstName} ${r.lastName ?? ""}, ${r.title ?? ""} · ${r.org}`).replace(/\s+/g, " ").trim(),
     "",
     `Length: ${(total / 30).toFixed(1)} s · voice: ${provider} · screens personalised: ${v.personalizeScreens !== false ? "yes" : "no"}`,
     "",

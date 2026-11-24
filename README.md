@@ -42,8 +42,11 @@ Update later with `/plugin marketplace update necx-outreach`.
 
 Then ask: *"Plan outreach for <agency website>"* and attach the employee list.
 
-### Personalized videos
-Ask *"Render the videos"* after a plan. Every contact gets their own video: real VS360 screens showing **their agency, title and initials**, a first-name greeting, voiceover and captions, plus an email thumbnail and GIF.
+### Emails, sequences and personalized videos
+After a plan, ask *"Build the outreach"*. On first use, Claude asks your name, designation and email, plus your ElevenLabs key (through a private browser page). Then, per agency:
+- **For every contact:** a role-based email sequence (humanized, with safe linked-thumbnail video embedding) and their own video, with real VS360 screens showing **their agency, title and initials** and a first-name greeting.
+- **For the agency:** one agency-wide video covering all of NECX, adapted to its programs and funders.
+- **Files:** everything is saved as `~/NECX Outreach Videos/<Agency>/<NN. Person (Title)>/`, plus `outreach.md`, `outreach.json` and `sequence.csv` (CRM import).
 
 | Where | How it renders |
 |---|---|

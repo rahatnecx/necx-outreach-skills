@@ -36,11 +36,17 @@ if (!TOKENS.length || TOKENS.some((t) => t.length < 24)) {
   process.exit(1);
 }
 const VIDEOS = path.join(DATA, "videos");
+const hostedLinks = (slug) => ({
+  watch: `${PUBLIC_URL}/v/${slug}/`, mp4: `${PUBLIC_URL}/v/${slug}/video.mp4`, thumbnail: `${PUBLIC_URL}/v/${slug}/thumbnail.jpg`, gif: `${PUBLIC_URL}/v/${slug}/preview.gif`,
+  // what the email files use
+  videoUrl: `${PUBLIC_URL}/v/${slug}/`, thumbnailUrl: `${PUBLIC_URL}/v/${slug}/thumbnail.jpg`,
+});
 const runner = createRunner({
   jobsDir: path.join(DATA, "jobs"),
+  baseDir: DATA,
   slugFor: (v) => `${v.videoId}-${randomBytes(6).toString("hex")}`,
-  videoDir: (slug) => path.join(VIDEOS, slug),
-  linksFor: (slug) => ({ watch: `${PUBLIC_URL}/v/${slug}/`, mp4: `${PUBLIC_URL}/v/${slug}/video.mp4`, thumbnail: `${PUBLIC_URL}/v/${slug}/thumbnail.jpg`, gif: `${PUBLIC_URL}/v/${slug}/preview.gif` }),
+  hosted: hostedLinks,
+  localFiles: false,
   voice: () => VOICE,
   fallback: () => ({ provider: "none" }),
 });
@@ -58,6 +64,10 @@ function buildServer() {
     const r = runner.submit(plan);
     return r.error ? { ...text(r.error), isError: true } : text(`${r.text}\n\nThe links work once the status is done.`);
   });
+  server.registerTool("get_outreach", { title: "Get the outreach files", description: TOOL_DOCS.get_outreach, inputSchema: { jobId: z.string(), format: z.enum(["markdown", "csv", "json"]).optional() }, annotations: { readOnlyHint: true } }, async ({ jobId, format }) => {
+    const t = runner.outreachFile(jobId, format ?? "markdown");
+    return t ? text(t) : { ...text(`No outreach saved for job ${jobId}.`), isError: true };
+  });
   server.registerTool("get_render_status", { title: "Render status", description: TOOL_DOCS.get_render_status, inputSchema: { jobId: z.string() }, annotations: { readOnlyHint: true } }, async ({ jobId }) => {
     const t = runner.status(jobId);
     return t ? text(t) : { ...text(`No job ${jobId}.`), isError: true };
@@ -68,7 +78,8 @@ function buildServer() {
 export const TOOL_DOCS = {
   list_screens: "The real VS360 screens a video can show, with ids, modules and verified default copy. Read before choosing `screen` scenes. Optional module filter: dashboard, cases, referrals, hotline, shelters, reports, voca, hud, fvpsa, stop, hhsc, vclg, access, calendar, notes, drive, network, services.",
   preview_plan: "Validates a per-person video plan without rendering: problems that block it (including two contacts sharing screens or voiceover lines), warnings, each video's script and length, and the voice that would be used. Free; call before render_videos and show the user the scripts.",
-  render_videos: "Renders one personalized video per person in the plan: MP4, email thumbnail, GIF preview and a watch page. Returns a jobId and the links at once; rendering takes about 1-3 minutes per video. Poll get_render_status until done. Rejects plans with problems (run preview_plan first).",
+  render_videos: "Saves the agency's email sequences (with the hosted links filled in) and renders one personalized video per person plus the optional agency-wide video: MP4, email thumbnail, GIF preview and a watch page. Returns a jobId and the links at once; rendering takes about 1-3 minutes per video. Poll get_render_status until done. Rejects plans with problems (run preview_plan first).",
+  get_outreach: "The saved outreach of a render job with the hosted video links filled in: markdown (every email, ready to paste), csv (sequence for CRM import) or json (structured).",
   get_render_status: "Status of a render job from render_videos: per video queued / preparing / rendering (with %) / done / failed, the voice used, and the links (watch page, MP4, thumbnail, GIF).",
 };
 

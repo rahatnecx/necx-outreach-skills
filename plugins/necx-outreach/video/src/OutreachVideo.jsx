@@ -88,7 +88,11 @@ function TitleScene({ scene, v }) {
   const r = v.recipient;
   const tag = pop(frame, fps, 2);
   const win = pop(frame, fps, 24, { damping: 16 });
-  const sub = [r.title, r.org].filter(Boolean).join(" · ");
+  const agency = v.kind === "agency";
+  const big = agency ? r.org : r.firstName;
+  // long agency names shrink to fit the left column
+  const bigSize = agency ? Math.max(62, Math.min(130, Math.round(1500 / Math.max(11, big.length)))) : 150;
+  const sub = agency ? "" : [r.title, r.org].filter(Boolean).join(" · ");
   return (
     <AbsoluteFill>
       <Background />
@@ -98,9 +102,9 @@ function TitleScene({ scene, v }) {
       </div>
       <div style={{ position: "absolute", left: 110, top: 250, width: 760, display: "flex", flexDirection: "column", gap: 26 }}>
         <div style={{ transform: `scale(${tag})`, transformOrigin: "left center", opacity: Math.min(1, tag * 1.5) }}>
-          <Kicker icon={IconPlayerPlayFilled}>A short video for</Kicker>
+          <Kicker icon={IconPlayerPlayFilled}>{agency ? "A short video for the team at" : "A short video for"}</Kicker>
         </div>
-        <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: 150, lineHeight: 1, letterSpacing: -4, ...GRAD_TEXT, ...enter(pop(frame, fps, 8), 40) }}>{r.firstName}</div>
+        <div style={{ fontFamily: FONT, fontWeight: 800, fontSize: bigSize, lineHeight: 1.05, letterSpacing: -bigSize * 0.026, ...GRAD_TEXT, ...enter(pop(frame, fps, 8), 40) }}>{big}</div>
         {sub ? <Sub delay={18} size={38} color={C.text}>{sub}</Sub> : null}
         {scene.topic ? (
           <div style={{ marginTop: 18, ...enter(pop(frame, fps, 30), 20) }}>

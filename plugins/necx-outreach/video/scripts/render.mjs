@@ -68,7 +68,7 @@ const P = await import(pathToFileURL(path.join(HERE, "scripts/pipeline.mjs")).hr
 
 // ---- plan ----------------------------------------------------------------------
 const raw = PLAN_PATH ? JSON.parse(readFileSync(PLAN_PATH, "utf8")) : { videos: [] };
-const { videos, problems, warnings } = P.validatePlan(raw, { only: opt("only", null) });
+const { outreach, videos, problems, warnings } = P.validatePlan(raw, { only: opt("only", null), requireVideos: false });
 if (!CHECK || videos.length) {
   for (const w of warnings) console.warn(`  ! ${w}`);
   if (problems.length && !(CHECK && !PLAN_PATH)) {
@@ -105,6 +105,9 @@ if (DRY) {
   for (const v of videos) console.log("\n" + P.scriptMarkdown(v, provider));
   process.exit(0);
 }
+const { saveOutreach } = await import(pathToFileURL(path.join(HERE, "server/jobs.mjs")).href);
+const first = saveOutreach(outreach, OUT, {});
+console.log(`Outreach saved: ${first.emails} email(s) in ${first.orgDir}`);
 
 // ---- render --------------------------------------------------------------------
 await P.stageImages(videos, path.dirname(PLAN_PATH));
@@ -113,7 +116,7 @@ console.log(`Voice: ${used}${used === "none" ? " (captions only)" : used === "sa
 console.log("Bundling…");
 const done = [];
 for (const v of videos) {
-  const dir = path.join(OUT, v.videoId);
+  const dir = path.join(OUT, v.folder ?? v.videoId);
   console.log(`▶ ${v.videoId}  ${P.lengthSeconds(v)} s`);
   let last = -1;
   await P.renderVideo(v, dir, {
@@ -130,6 +133,7 @@ for (const v of videos) {
   if (!flag("no-video")) console.log(`  ✓ ${v.videoId}.mp4`);
   done.push(dir);
 }
-console.log(`\nDone. ${done.length} video(s) in ${OUT}`);
+saveOutreach(outreach, OUT, { voice: used }); // with real video lengths
+console.log(`\nDone. ${done.length} video(s); emails, schedule and CSV in ${first.orgDir}`);
 for (const d of done) console.log(`  ${d}`);
 process.exit(0);

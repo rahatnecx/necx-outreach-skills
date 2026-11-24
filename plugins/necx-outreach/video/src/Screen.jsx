@@ -138,7 +138,7 @@ function fit(text, size, weight, max, min = size * 0.75) {
   return { text: t, size: s };
 }
 
-const initialsOf = (r) => [r.firstName, r.lastName].filter(Boolean).map((n) => n.trim()[0]?.toUpperCase()).filter(Boolean).join(" ");
+const initialsOf = (r) => r.initials ?? [r.firstName, r.lastName].filter(Boolean).map((n) => n.trim()[0]?.toUpperCase()).filter(Boolean).join(" ");
 
 function Personal({ id, who, colours }) {
   const out = [];
@@ -172,11 +172,12 @@ function Personal({ id, who, colours }) {
     );
   }
   const gr = colours.greeting;
-  if (id === "dashboard" && gr?.ok && who.firstName && SLOTS.greeting) {
+  const greetName = who.greetName ?? who.firstName;
+  if (id === "dashboard" && gr?.ok && greetName && SLOTS.greeting) {
     const b = SLOTS.greeting.box;
     const st = SLOTS.greeting.style;
     const daypart = SLOTS.greeting.text.match(/^Good (\w+)/)?.[1] ?? "morning";
-    const text = `Good ${daypart}, ${who.firstName}`;
+    const text = `Good ${daypart}, ${greetName}`;
     const r = ring(b, 4);
     const w = Math.max(r.w, textWidth(text, st.fontSize, st.fontWeight) + 12);
     out.push(

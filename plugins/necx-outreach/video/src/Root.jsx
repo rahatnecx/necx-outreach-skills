@@ -6,7 +6,14 @@ import { ScreenCheck, checkSize } from "./ScreenCheck";
 
 // Studio preview uses the first video of example-plan.json; renders pass a
 // video from the plan as inputProps (scripts/render.mjs).
-const preview = { sender: EXAMPLE.sender, ...EXAMPLE.defaults, ...EXAMPLE.videos[0] };
+const first = EXAMPLE.contacts.find((c) => c.video);
+const preview = {
+  sender: EXAMPLE.sender,
+  ...EXAMPLE.defaults,
+  ...first.video,
+  videoId: "preview",
+  recipient: { firstName: first.firstName, lastName: first.lastName, title: first.title, org: EXAMPLE.org.name },
+};
 
 export const Root = () => (
   <>

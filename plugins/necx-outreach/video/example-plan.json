@@ -4,6 +4,29 @@
     "title": "Partnerships, NECX",
     "email": "you@necx.org"
   },
+  "org": {
+    "name": "Riverbend Family Shelter",
+    "website": "https://riverbend.example.org",
+    "timezone": "America/Chicago",
+    "programs": [
+      "shelter",
+      "hotline"
+    ],
+    "funders": [
+      "VOCA",
+      "FVPSA"
+    ],
+    "facts": [
+      {
+        "fact": "Runs a 40-bed emergency shelter and a 24/7 crisis line (fictional example)",
+        "source": "https://riverbend.example.org/about"
+      },
+      {
+        "fact": "Funded by VOCA and FVPSA (fictional example)",
+        "source": "https://riverbend.example.org/funders"
+      }
+    ]
+  },
   "defaults": {
     "voice": {
       "provider": "auto"
@@ -12,133 +35,218 @@
     "captions": true,
     "personalizeScreens": true
   },
-  "videos": [
+  "agencyVideo": {
+    "enabled": true,
+    "emails": [
+      {
+        "step": 1,
+        "type": "agency-video",
+        "sendAt": "2026-12-14 10:00",
+        "to": "info@riverbend.example.org",
+        "subject": "A short video for the Riverbend team",
+        "body": "Hi Riverbend team,\n\nI made a short video showing what your shelter, crisis line and VOCA and FVPSA reporting would look like in one place, with Riverbend's name on it.\n\n[VIDEO]\n\nWho on your team would be the right person to talk to about this?"
+      }
+    ]
+  },
+  "contacts": [
     {
-      "videoId": "riverbend-priya-01",
+      "firstName": "Priya",
+      "lastName": "Shah",
+      "title": "Grants Manager",
+      "email": "priya@riverbend.example.org",
       "persona": "A",
-      "recipient": {
-        "firstName": "Priya",
-        "lastName": "Shah",
-        "title": "Grants Manager",
-        "org": "Riverbend Family Shelter"
-      },
-      "scenes": [
-        {
-          "type": "title",
-          "topic": "VOCA and FVPSA without the quarter-end scramble",
-          "vo": "Priya, I put this short video together for you, about grant reporting at Riverbend Family Shelter."
-        },
-        {
-          "type": "problem",
-          "headline": "Two funders. One set of *numbers* rebuilt by hand.",
-          "lines": [
-            "Services logged in one place, demographics in another",
-            "VOCA and FVPSA each want them their own way"
-          ],
-          "vo": "With VOCA and FVPSA both funding Riverbend, the same services get counted twice, by hand, in two different formats."
-        },
-        {
-          "type": "screen",
-          "screen": "reports-case-grant",
-          "vo": "In NECX, every case is tagged to the grant that funds it, so services count toward the right grant from day one."
-        },
-        {
-          "type": "screen",
-          "screen": "voca-ready",
-          "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off."
-        },
-        {
-          "type": "screen",
-          "screen": "fvpsa-report",
-          "vo": "The FVPSA report fills in from the same records."
-        },
-        {
-          "type": "screen",
-          "screen": "fvpsa-explain",
-          "vo": "And Explain shows every record behind a number, and anything left out."
-        },
-        {
-          "type": "checklist",
-          "headline": "Count it once. *Report* it everywhere.",
-          "items": [
-            "Every case tagged to its grant",
-            "Checked before you certify",
-            "Every number explained"
-          ],
-          "vo": "Count each service once, check it before you certify, and explain every number."
-        },
-        {
-          "type": "cta",
-          "question": "Would it help to see last quarter's VOCA report built this way?",
-          "vo": "Would it help to see last quarter's VOCA report built this way? Just reply to this email."
-        }
-      ],
+      "rank": 1,
+      "wave": 1,
       "sources": [
-        "https://riverbend.example.org/about (fictional example org)"
+        "https://riverbend.example.org/funders"
+      ],
+      "video": {
+        "scenes": [
+          {
+            "type": "title",
+            "topic": "VOCA and FVPSA without the quarter-end scramble",
+            "vo": "Priya, I put this short video together for you, about grant reporting at Riverbend Family Shelter."
+          },
+          {
+            "type": "problem",
+            "headline": "Two funders. One set of *numbers* rebuilt by hand.",
+            "lines": [
+              "Services logged in one place, demographics in another",
+              "VOCA and FVPSA each want them their own way"
+            ],
+            "vo": "With VOCA and FVPSA both funding Riverbend, the same services get counted twice, by hand, in two different formats."
+          },
+          {
+            "type": "screen",
+            "screen": "reports-case-grant",
+            "vo": "In NECX, every case is tagged to the grant that funds it, so services count toward the right grant from day one."
+          },
+          {
+            "type": "screen",
+            "screen": "voca-ready",
+            "vo": "For VOCA, NECX builds the OVC PMT screen sheet from your logged services, and checks it against OVC's own rules before sign-off."
+          },
+          {
+            "type": "screen",
+            "screen": "fvpsa-report",
+            "vo": "The FVPSA report fills in from the same records."
+          },
+          {
+            "type": "screen",
+            "screen": "fvpsa-explain",
+            "vo": "And Explain shows every record behind a number, and anything left out."
+          },
+          {
+            "type": "checklist",
+            "headline": "Count it once. *Report* it everywhere.",
+            "items": [
+              "Every case tagged to its grant",
+              "Checked before you certify",
+              "Every number explained"
+            ],
+            "vo": "Count each service once, check it before you certify, and explain every number."
+          },
+          {
+            "type": "cta",
+            "question": "Would it help to see last quarter's VOCA report built this way?",
+            "vo": "Would it help to see last quarter's VOCA report built this way? Just reply to this email."
+          }
+        ]
+      },
+      "emails": [
+        {
+          "step": 1,
+          "type": "video",
+          "sendAt": "2026-12-02 09:30",
+          "subject": "VOCA and FVPSA, counted once",
+          "body": "Hi Priya,\n\nWith VOCA and FVPSA both funding Riverbend, I'm guessing the same services get counted twice each quarter, in two formats.\n\nI recorded a one-minute video showing how NECX builds both reports from one set of case records.\n\n[VIDEO]\n\nWould it help to see last quarter's VOCA report built this way?"
+        },
+        {
+          "step": 2,
+          "type": "bump",
+          "sendAt": "2026-12-04 09:30",
+          "body": "Hi Priya, making sure the video reached you. If reporting sits with someone else at Riverbend, a name is all I need."
+        },
+        {
+          "step": 3,
+          "type": "text",
+          "sendAt": "2026-12-09 10:00",
+          "subject": "The FVPSA numbers behind each line",
+          "body": "Hi Priya,\n\nOne more thing that grants teams tell us matters at certification time: in NECX, every number in the FVPSA report opens to the records behind it, and shows anything left out and why.\n\nThat makes the questions from a program officer much faster to answer.\n\nIs that something you deal with at Riverbend?"
+        },
+        {
+          "step": 4,
+          "type": "breakup",
+          "sendAt": "2026-12-16 10:00",
+          "subject": "Closing the loop",
+          "body": "Hi Priya,\n\nI'll stop here so I'm not filling your inbox. If quarter-end reporting ever becomes a priority at Riverbend, just reply and I'll set up a short walkthrough with your own grants.\n\nThanks for the work your team does."
+        }
       ]
     },
     {
-      "videoId": "riverbend-marcus-01",
+      "firstName": "Marcus",
+      "lastName": "Lee",
+      "title": "Shelter Director",
+      "email": "marcus@riverbend.example.org",
       "persona": "B",
-      "recipient": {
-        "firstName": "Marcus",
-        "lastName": "Lee",
-        "title": "Shelter Director",
-        "org": "Riverbend Family Shelter"
-      },
-      "scenes": [
-        {
-          "type": "title",
-          "topic": "Every bed at Riverbend, live",
-          "vo": "Marcus, this is a short video I made for you, about running the shelter side of Riverbend."
-        },
-        {
-          "type": "problem",
-          "headline": "Tonight's *bed count* lives on a whiteboard.",
-          "lines": [
-            "Intake doesn't know what's free",
-            "The waitlist is a separate spreadsheet"
-          ],
-          "vo": "When the bed count lives on a whiteboard and the waitlist in a spreadsheet, intake is always guessing."
-        },
-        {
-          "type": "screen",
-          "screen": "dashboard",
-          "vo": "Here's NECX with Riverbend's name on it. Beds, hotline and what needs attention, the moment you sign in."
-        },
-        {
-          "type": "screen",
-          "screen": "shelter-board",
-          "vo": "Every bed is available, occupied, reserved, or out of service, so tonight's count is the real count."
-        },
-        {
-          "type": "screen",
-          "screen": "shelter-waitlist",
-          "vo": "The waitlist sits right beside your beds."
-        },
-        {
-          "type": "screen",
-          "screen": "referral-sharing",
-          "vo": "And when a family needs a partner shelter, you choose exactly what goes with the referral."
-        },
-        {
-          "type": "checklist",
-          "headline": "One live view of the *whole* shelter.",
-          "items": [
-            "Live bed board",
-            "Waitlist beside the beds",
-            "Referrals with consent"
-          ],
-          "vo": "One live bed board, the waitlist beside it, and referrals that share only what you choose."
-        },
-        {
-          "type": "cta",
-          "question": "Worth a 20-minute look with your own room layout?",
-          "vo": "Worth a twenty-minute look with your own room layout? Just reply to this email."
-        }
-      ],
+      "rank": 2,
+      "wave": 1,
       "sources": [
-        "https://riverbend.example.org/shelter (fictional example org)"
+        "https://riverbend.example.org/about"
+      ],
+      "video": {
+        "scenes": [
+          {
+            "type": "title",
+            "topic": "Every bed at Riverbend, live",
+            "vo": "Marcus, this is a short video I made for you, about running the shelter side of Riverbend."
+          },
+          {
+            "type": "problem",
+            "headline": "Tonight's *bed count* lives on a whiteboard.",
+            "lines": [
+              "Intake doesn't know what's free",
+              "The waitlist is a separate spreadsheet"
+            ],
+            "vo": "When the bed count lives on a whiteboard and the waitlist in a spreadsheet, intake is always guessing."
+          },
+          {
+            "type": "screen",
+            "screen": "dashboard",
+            "vo": "Here's NECX with Riverbend's name on it. Beds, hotline and what needs attention, the moment you sign in."
+          },
+          {
+            "type": "screen",
+            "screen": "shelter-board",
+            "vo": "Every bed is available, occupied, reserved, or out of service, so tonight's count is the real count."
+          },
+          {
+            "type": "screen",
+            "screen": "shelter-waitlist",
+            "vo": "The waitlist sits right beside your beds."
+          },
+          {
+            "type": "screen",
+            "screen": "referral-sharing",
+            "vo": "And when a family needs a partner shelter, you choose exactly what goes with the referral."
+          },
+          {
+            "type": "checklist",
+            "headline": "One live view of the *whole* shelter.",
+            "items": [
+              "Live bed board",
+              "Waitlist beside the beds",
+              "Referrals with consent"
+            ],
+            "vo": "One live bed board, the waitlist beside it, and referrals that share only what you choose."
+          },
+          {
+            "type": "cta",
+            "question": "Worth a 20-minute look with your own room layout?",
+            "vo": "Worth a twenty-minute look with your own room layout? Just reply to this email."
+          }
+        ]
+      },
+      "emails": [
+        {
+          "step": 1,
+          "type": "video",
+          "sendAt": "2026-12-03 09:30",
+          "subject": "Every bed at Riverbend, live",
+          "body": "Hi Marcus,\n\nRunning 40 beds and a crisis line means intake needs the real bed count, not last night's whiteboard.\n\nI made you a one-minute video with Riverbend's name on a live bed board, the waitlist beside it, and referrals to partner shelters.\n\n[VIDEO]\n\nWorth a 20-minute look with your own room layout?"
+        },
+        {
+          "step": 2,
+          "type": "bump",
+          "sendAt": "2026-12-07 09:30",
+          "body": "Hi Marcus, checking the video came through. If someone else runs intake at Riverbend, I'm happy to send it their way."
+        },
+        {
+          "step": 3,
+          "type": "breakup",
+          "sendAt": "2026-12-15 10:00",
+          "subject": "Last note from me",
+          "body": "Hi Marcus,\n\nI won't keep following up. If the bed board or the waitlist ever becomes a headache at Riverbend, reply here and I'll show you how other shelters run it.\n\nThank you for the work you do."
+        }
+      ]
+    },
+    {
+      "firstName": "Dana",
+      "lastName": "Brooks",
+      "title": "Executive Assistant",
+      "email": "dana@riverbend.example.org",
+      "persona": "G",
+      "rank": 5,
+      "wave": 2,
+      "video": null,
+      "emails": [
+        {
+          "step": 1,
+          "type": "text",
+          "sendAt": "2026-12-10 11:00",
+          "subject": "Who handles grant reporting?",
+          "body": "Hi Dana,\n\nI'm trying to reach whoever owns VOCA and FVPSA reporting at Riverbend. Could you point me to the right person?\n\nThank you."
+        }
       ]
     }
   ]

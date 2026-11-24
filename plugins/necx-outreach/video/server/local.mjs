@@ -17,7 +17,8 @@ import os from "node:os";
 import path from "node:path";
 import readline from "node:readline";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { P, catalogText, createRunner } from "./jobs.mjs";
+import { P, catalogText, createRunner, setVideoLink } from "./jobs.mjs";
+import { folderName } from "../scripts/outreach.mjs";
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const log = (...a) => console.error("[necx-video]", ...a);
@@ -43,6 +44,20 @@ function voice() {
   return { provider: P.hasSay ? "say" : "none" };
 }
 const fallback = () => ({ provider: P.hasSay ? "say" : "none" });
+
+// ---- sender profile: asked once per computer, used in every plan ---------------------
+const PROFILE = path.join(HOME, ".config", "necx-outreach", "profile.json");
+function profile() {
+  const fromSettings = { name: setting(process.env.NECX_SENDER_NAME), title: setting(process.env.NECX_SENDER_TITLE), email: setting(process.env.NECX_SENDER_EMAIL) };
+  const saved = existsSync(PROFILE) ? JSON.parse(readFileSync(PROFILE, "utf8")) : {};
+  return { name: saved.name || fromSettings.name, title: saved.title || fromSettings.title, email: saved.email || fromSettings.email };
+}
+// the saved sender fills whatever the plan leaves out
+function withSender(plan) {
+  if (!plan || typeof plan !== "object") return plan;
+  const me = profile();
+  return { ...plan, sender: { ...me, ...Object.fromEntries(Object.entries(plan.sender ?? {}).filter(([, v]) => v)) } };
+}
 const SETUP_HINT = "To use the real NECX voice, call setup_voice: it opens a private page in the browser to enter the ElevenLabs key (never paste the key into the chat).";
 
 // ---- first run: install the video tools, then Remotion's headless Chrome ----------
@@ -106,14 +121,11 @@ const deps = (async () => {
 });
 deps.catch(() => {});
 
+// <OUT>/<Agency>/<NN. Person (Title)>/  (and "00. Agency video (whole team)")
 const runner = createRunner({
   jobsDir: path.join(STATE, "jobs"),
-  slugFor: (v) => v.videoId,
-  videoDir: (slug) => path.join(OUT, slug),
-  linksFor: (slug) => {
-    const dir = path.join(OUT, slug);
-    return { watch: pathToFileURL(path.join(dir, "index.html")).href, mp4: path.join(dir, "video.mp4"), thumbnail: path.join(dir, "thumbnail.jpg"), gif: path.join(dir, "preview.gif") };
-  },
+  baseDir: OUT,
+  slugFor: (v) => v.folder,
   voice,
   fallback,
   ready: () => deps,
@@ -178,28 +190,63 @@ async function startSetup() {
 // ---- tools -------------------------------------------------------------------------
 const PLAN = { type: "object", description: "The video plan: { sender, defaults?, videos: [{ videoId, persona, recipient: {firstName, lastName, title, org}, scenes: [...], sources }] }. One different script per person.", additionalProperties: true };
 const TOOLS = [
+  { name: "get_setup", description: "Call FIRST, before any outreach work: the saved sender (name, designation, email), whether an ElevenLabs voice key is set and its credits, and where videos are saved. If the sender is missing, ask the user and call save_profile; if the key is missing, call setup_voice.", inputSchema: { type: "object", properties: {} }, annotations: { readOnlyHint: true } },
+  { name: "save_profile", description: "Saves the sender used on every video and email (asked once per computer): name, designation/title, NECX email.", inputSchema: { type: "object", properties: { name: { type: "string" }, title: { type: "string" }, email: { type: "string" } }, required: ["name", "title", "email"] } },
+  { name: "save_outreach", description: "Saves an agency's outreach without rendering videos: per-person email sequences (TXT + safe HTML video emails), outreach.md, outreach.json, sequence.csv (CRM import) in <videos folder>/<Agency>/<NN. Person (Title)>/. Enforces the writing rules (AI-sounding phrases, dashes, links, length): fix every problem it reports.", inputSchema: { type: "object", properties: { plan: { type: "object", additionalProperties: true } }, required: ["plan"] } },
+  { name: "set_video_link", description: "After the user uploads a video (Drive, Vimeo, Loom...), fill its https link (and optionally a hosted thumbnail image URL) into that person's emails and the CSV. person = name, videoId, or 'agency'.", inputSchema: { type: "object", properties: { org: { type: "string" }, person: { type: "string" }, videoUrl: { type: "string" }, thumbnailUrl: { type: "string" } }, required: ["org", "person", "videoUrl"] } },
   { name: "list_screens", description: "The real VS360 screens a video can show, with ids, modules and verified default copy. Read before choosing `screen` scenes. Optional module filter: dashboard, cases, referrals, hotline, shelters, reports, voca, hud, fvpsa, stop, hhsc, vclg, access, calendar, notes, drive, network, services.", inputSchema: { type: "object", properties: { module: { type: "string" } } }, annotations: { readOnlyHint: true } },
   { name: "preview_plan", description: "Validates a per-person video plan without rendering: blocking problems (including two contacts sharing screens or voiceover lines), warnings, each video's script and length, and the voice that would be used. Free; call before render_videos and show the user the scripts.", inputSchema: { type: "object", properties: { plan: PLAN }, required: ["plan"] }, annotations: { readOnlyHint: true } },
   { name: "render_videos", description: "Renders one personalized video per person in the plan on this computer: MP4, email thumbnail, GIF preview and a preview page, saved in the NECX Outreach Videos folder. Returns a jobId at once; about 1-3 minutes per video (the first run also installs the video tools, about a minute). Poll get_render_status until done.", inputSchema: { type: "object", properties: { plan: PLAN }, required: ["plan"] } },
   { name: "get_render_status", description: "Status of a render job: per video queued / preparing / rendering (with %) / done / failed, the voice used, and where the files are.", inputSchema: { type: "object", properties: { jobId: { type: "string" } }, required: ["jobId"] }, annotations: { readOnlyHint: true } },
   { name: "setup_voice", description: "Opens a private page in the user's browser (on this computer) to enter or change the ElevenLabs API key for narration. Use when there's no key or it's out of credits. Never ask the user to paste a key into the chat.", inputSchema: { type: "object", properties: {} } },
-  { name: "open_videos_folder", description: "Opens the folder with the rendered videos in Finder / Explorer, or the folder of one video.", inputSchema: { type: "object", properties: { videoId: { type: "string" } } } },
+  { name: "open_videos_folder", description: "Opens the videos folder in Finder / Explorer, or one agency's folder.", inputSchema: { type: "object", properties: { org: { type: "string" } } } },
 ];
 
 async function callTool(name, args = {}) {
   switch (name) {
     case "list_screens":
       return catalogText(args.module);
+    case "get_setup": {
+      const me = profile();
+      const v = voice();
+      const c = v.provider === "elevenlabs" ? await P.credits(v.key) : null;
+      const missing = ["name", "title", "email"].filter((k) => !me[k]);
+      return [
+        `Sender: ${missing.length ? `MISSING ${missing.join(", ")}; ask the user (designation = title), then call save_profile` : `${me.name}, ${me.title} <${me.email}>`}`,
+        `Voice: ${v.provider === "elevenlabs" ? (c?.error ? `ElevenLabs key set but the check failed (${c.error}); offer setup_voice to replace it` : `ElevenLabs, ${c ? `${c.left.toLocaleString()} characters left (about 900-1,400 per video)` : "key set"}`) : `NO ElevenLabs key; call setup_voice so the user can enter it in their browser (never in chat). Until then: ${v.provider === "say" ? "macOS voice, review only" : "captions only"}`}`,
+        `Videos and emails are saved in: ${OUT}/<Agency>/<NN. Person (Title)>/`,
+        `Video tools: ${depsState === "ready" ? "ready" : depsState === "failed" ? `failed (${depsError})` : `setting up (${depsStep || "checking"})`}`,
+      ].join("\n");
+    }
+    case "save_profile": {
+      const name = String(args.name ?? "").trim();
+      const title = String(args.title ?? "").trim();
+      const email = String(args.email ?? "").trim();
+      if (!name || !title || !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) throw new Error("Need a name, a designation/title and a valid email.");
+      mkdirSync(path.dirname(PROFILE), { recursive: true, mode: 0o700 });
+      writeFileSync(PROFILE, JSON.stringify({ name, title, email }, null, 2), { mode: 0o600 });
+      return `Saved. Videos and emails will be signed ${name}, ${title} <${email}>.`;
+    }
+    case "save_outreach": {
+      const r = runner.saveOnly(withSender(args.plan));
+      if (r.error) throw new Error(r.error);
+      return r.text;
+    }
+    case "set_video_link": {
+      const r = setVideoLink(OUT, args);
+      if (r.error) throw new Error(r.error);
+      return r.text;
+    }
     case "preview_plan": {
       const setup = depsState === "installing" ? "\n\n(The video tools are still installing in the background; rendering can be queued now.)" : depsState === "failed" ? `\n\nThe video tools failed to install: ${depsError}` : "";
-      return (await runner.preview(args.plan, SETUP_HINT)) + setup;
+      return (await runner.preview(withSender(args.plan), SETUP_HINT)) + setup;
     }
     case "render_videos": {
       if (depsState === "failed") throw new Error(`The video tools couldn't be installed: ${depsError}. Check the internet connection, then restart Claude.`);
-      const r = runner.submit(args.plan);
+      const r = runner.submit(withSender(args.plan));
       if (r.error) throw new Error(r.error);
       const v = voice();
-      return `${r.text}\n\nVideos are saved in: ${OUT}${depsState === "installing" ? `\nFirst run: ${depsStep} before rendering.` : ""}${v.provider !== "elevenlabs" ? `\n${SETUP_HINT}` : ""}`;
+      return `${r.text}\n\nFolder: ${OUT}${depsState === "installing" ? `\nFirst run: ${depsStep} before rendering.` : ""}${v.provider !== "elevenlabs" ? `\n${SETUP_HINT}` : ""}`;
     }
     case "get_render_status": {
       const t = runner.status(String(args.jobId ?? ""), depsState === "installing" ? `First run: ${depsStep}…` : "");
@@ -212,7 +259,7 @@ async function callTool(name, args = {}) {
       return `${opened ? "Opened" : "Open"} the voice setup page in the browser: ${url}\nIt's only reachable from this computer and closes after saving (or in 15 minutes). The key is checked with ElevenLabs and saved to ${VOICE_ENV}, readable only by this user. Ask the user to tell you when it says "Saved".`;
     }
     case "open_videos_folder": {
-      const dir = args.videoId && /^[a-z0-9-]+$/.test(args.videoId) ? path.join(OUT, args.videoId) : OUT;
+      const dir = args.org && existsSync(path.join(OUT, folderName(args.org))) ? path.join(OUT, folderName(args.org)) : OUT;
       openInBrowser(dir);
       return `Opened ${dir}`;
     }
@@ -236,7 +283,7 @@ rl.on("line", async (line) => {
   if (id === undefined) return; // notifications
   try {
     if (method === "initialize") {
-      return send({ id, result: { protocolVersion: params?.protocolVersion ?? "2025-06-18", capabilities: { tools: {} }, serverInfo: { name: "necx-video", version: "1.2.0" }, instructions: "Render a different personalized NECX outreach video per contact on this computer. Use with the necx-outreach-video skill: preview_plan, then render_videos, then get_render_status. For the ElevenLabs key use setup_voice; never ask for it in chat." } });
+      return send({ id, result: { protocolVersion: params?.protocolVersion ?? "2025-06-18", capabilities: { tools: {} }, serverInfo: { name: "necx-video", version: "1.3.0" }, instructions: "NECX outreach on this computer: per-person email sequences and personalized videos, saved per agency. Use with the necx-outreach-video skill. Start with get_setup (ask the sender's name, designation, email once; ElevenLabs key only via setup_voice, never in chat). Then preview_plan, render_videos (or save_outreach for emails only), get_render_status, set_video_link." } });
     }
     if (method === "ping") return send({ id, result: {} });
     if (method === "tools/list") return send({ id, result: { tools: TOOLS } });

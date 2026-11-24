@@ -3,6 +3,14 @@
 All notable changes to the playbook, skill and GPT instructions.
 Format: date · version · change · source.
 
+## v1.3.0 — 2026-11-24
+- **Full outreach package per agency.** For every contact: a role-based email sequence (video → bump → new angle → break-up; routing note for gatekeepers) plus their personalized video. Plus one **agency-wide video**, semi-personalized ("for the team at <Agency>", agency name, initials and "Good afternoon, team" in every screen), whose screens adapt to the agency's programs and funders.
+- **Output is organized per agency, then per person:** `<Agency>/NN. Person (Title)/` with the video, thumbnail, GIF and `email-NN-<type>.html/.txt`, and at the agency level `outreach.json`, `outreach.md`, `sequence.csv` (CRM import) and `HOW-TO-SEND.md`.
+- **Humanizer, enforced.** The tools reject emails with AI-stock words and clichés, em/en dashes, exclamation marks, emoji, ALL-CAPS, links in the body, the wrong video placement or over-length copy. The skill runs the `humanizer` skill when installed, plus a bundled `humanizer.md`.
+- **Safe video embedding:** a linked static thumbnail plus a text link, in table-based HTML that works in Outlook and Gmail, with a plain-text twin. No players, iframes, scripts or attachments. `set_video_link` fills hosting links in after upload.
+- **Setup asked once:** `get_setup` / `save_profile` save the sender's name, designation and email on the computer; the ElevenLabs key goes through `setup_voice` (browser page) or the plugin settings.
+- Fix: the pipeline runs Remotion's CLI with the running Node, so renders work even without `node` on PATH.
+
 ## v1.2.1 — 2026-11-24
 - Repo made public. The worked example and sample prompts no longer name a real agency or its staff: they use roles and a fictional `riverbend.example.org`. The README now states the public-repo rules.
 

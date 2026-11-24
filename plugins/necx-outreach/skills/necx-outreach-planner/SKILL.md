@@ -19,7 +19,7 @@ The output is a ranked contact plan with send dates, To/CC/BCC, subject, body, b
 ## How to run it in Claude
 - **Fetching:** use the Firecrawl tools: `firecrawl_scrape` with formats `markdown` and `links`, `onlyMainContent: true`, `waitFor: 3000`. Use `firecrawl_search` for searches and the `screenshot` format for the homepage. necx.org and docs.necx.org are JS-rendered, so plain WebFetch returns only metadata. If Firecrawl isn't connected, try WebFetch. If a page comes back empty, say so and ask the user to paste it.
 - **Deliverable:** a Docs artifact when that type is available (one section per contact), otherwise a markdown file. A one-person request is answered in chat.
-- **Rendering:** when the user wants the videos made, follow the `necx-outreach-video` skill with the plan JSON (section 8). It renders one video per contact, with the prospect's agency and name inside real VS360 screens: through the **NECX Video connector** (claude.ai, Desktop, Cowork, Claude Code; hosted watch-page links) or locally in Claude Code with this plugin. Without either, deliver the plan JSON.
+- **Deliverable = the outreach package.** After research and ranking, hand off to the `necx-outreach-video` skill. It runs a setup step that asks the sender's name, designation and email once, and the ElevenLabs key through a private browser page. Then it writes the plan JSON (org facts, programs, funders, every contact with a role-based email sequence and a personalized video, plus one agency-wide video), humanizes every email (enforced), and saves everything per agency and per person: emails, a send schedule, a CRM-ready CSV and the videos. Emails embed video safely as a linked thumbnail.
 - **Check-ins:** ask before starting only when org name/website or the employee list is missing. Otherwise state your assumptions and proceed.
 
 ---
@@ -196,7 +196,7 @@ Never put multiple prospects in To, and never BCC-blast prospects.
 - Warm, plain tone. Never: "touch base", "circle back", "hope this finds you well", "game-changing", "quick call", "just following up".
 - Never survivor stories or locations, and never imply the org is failing.
 
-**Thumbnail line:** `[Video thumbnail: "<First>, <topic> (<length>)"]`
+**Video placement:** a line containing only `[VIDEO]` where the thumbnail goes. The tools render it as a linked thumbnail image plus a text link (never an embedded player or attachment).
 
 **Bump:** "Hi <First>, I wanted to make sure the video reached you. If <topic> sits with someone else at <Org>, a name is all I need. Thanks, <Sender>"
 
